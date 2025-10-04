@@ -14,9 +14,9 @@ from kivy.utils import get_color_from_hex
 import json
 import os
 from datetime import datetime
-import random
-import matplotlib.pyplot as plt
-import numpy as np
+import asyncio
+import threading
+from bleak import BleakScanner, BleakClient
 
 # Improved color scheme with better contrast
 COLORS = {
@@ -34,6 +34,98 @@ COLORS = {
     'text_secondary': get_color_from_hex('#546E7A'),
     'button_start': get_color_from_hex('#F18F01'),
 }
+
+# BLE Configuration
+SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+
+class BLESensorManager:
+    def __init__(self):
+        self.client = None
+        self.is_connected = False
+        self.is_scanning = False
+        self.current_value = 0
+        self.loop = None
+        self.thread = None
+        
+    def start_ble_loop(self):
+        """Start BLE in a separate thread"""
+        if self.loop is None:
+            self.loop = asyncio.new_event_loop()
+            self.thread = threading.Thread(target=self._run_ble_loop, daemon=True)
+            self.thread.start()
+    
+    def _run_ble_loop(self):
+        """Run the asyncio event loop"""
+        asyncio.set_event_loop(self.loop)
+        self.loop.run_forever()
+    
+    async def _connect_to_sensor(self):
+        """Connect to BLE sensor"""
+        print("Поиск ESP32...")
+        
+        devices = await BleakScanner.discover(timeout=10.0)
+        target_device = next((d for d in devices if d.name and "Оно живое!" in d.name), None)
+        
+        if not target_device:
+            print("ESP32 не найдена")
+            return False
+        
+        print(f"Найдена: {target_device.name}")
+        
+        try:
+            self.client = BleakClient(target_device)
+            await self.client.connect()
+            self.is_connected = True
+            print("Подключено к датчику!")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Ошибка подключения: {e}")
+            return False
+    
+    async def _read_sensor_data(self):
+        """Read data from BLE sensor"""
+        if not self.client or not self.is_connected:
+            return
+        
+        try:
+            data = await self.client.read_gatt_char(CHARACTERISTIC_UUID)
+            sensor_value = data.decode('utf-8').strip()
+            
+            # Convert to integer, handle potential errors
+            try:
+                self.current_value = float(sensor_value)
+                print(f"📈 Напряжение мышцы: {self.current_value}")
+            except ValueError:
+                print(f"❌ Неверный формат данных: {sensor_value}")
+                
+        except Exception as e:
+            print(f"❌ Ошибка чтения: {e}")
+            self.is_connected = False
+    
+    def connect_sensor(self):
+        """Connect to sensor from main thread"""
+        if self.loop and not self.is_connected:
+            asyncio.run_coroutine_threadsafe(self._connect_to_sensor(), self.loop)
+    
+    def read_sensor_data(self):
+        """Read sensor data from main thread"""
+        if self.loop and self.is_connected:
+            asyncio.run_coroutine_threadsafe(self._read_sensor_data(), self.loop)
+    
+    def disconnect_sensor(self):
+        """Disconnect from sensor"""
+        if self.loop and self.client and self.is_connected:
+            async def disconnect():
+                await self.client.disconnect()
+                self.is_connected = False
+                print("Отключено от датчика")
+            
+            asyncio.run_coroutine_threadsafe(disconnect(), self.loop)
+
+# Global sensor manager
+sensor_manager = BLESensorManager()
 
 class RoundedButton(Button):
     def __init__(self, **kwargs):
@@ -428,14 +520,14 @@ class HistoryScreen(Screen):
         header_layout.add_widget(date_label)
         header_layout.add_widget(duration_label)
         
-        # Metrics
+        # Metrics - only muscle tension metrics
         metrics = workout.get('metrics', {})
         metrics_layout = GridLayout(cols=3, size_hint_y=0.6, spacing=10, padding=[0, 10, 0, 0])
         
         metrics_data = [
-            ('Выносливость', f"{metrics.get('max_endurance', 0):.0f}"),
-            ('Мощность', f"{metrics.get('max_power', 0):.0f}"),
-            ('Пульс', f"{metrics.get('max_heart_rate', 0):.0f}")
+            ('Макс. напряжение', f"{metrics.get('max_tension', 0):.0f}"),
+            ('Ср. напряжение', f"{metrics.get('avg_tension', 0):.0f}"),
+            ('Мин. напряжение', f"{metrics.get('min_tension', 0):.0f}")
         ]
         
         for name, value in metrics_data:
@@ -520,6 +612,7 @@ class WorkoutScreen(Screen):
         self.timer_event = None
         self.timer_label = None
         self.sensor_data = []
+        self.sensor_update_event = None
 
         main_layout = BoxLayout(orientation='vertical', padding=25, spacing=25)
         
@@ -559,7 +652,7 @@ class WorkoutScreen(Screen):
         # Sensor data
         sensor_card = CardLayout(height=100)
         self.sensor_label = Label(
-            text='Данные датчиков: не активны',
+            text='Датчик: не подключен\nНажмите "ПОДКЛЮЧИТЬ ДАТЧИК"',
             font_size='18sp',
             color=COLORS['text_primary']
         )
@@ -588,6 +681,17 @@ class WorkoutScreen(Screen):
         control_layout.add_widget(stop_button)
         main_layout.add_widget(control_layout)
         
+        # Sensor connection button
+        sensor_button = RoundedButton(
+            text='ПОДКЛЮЧИТЬ ДАТЧИК',
+            font_size='20sp',
+            size_hint_y=0.12,
+            color=COLORS['white']
+        )
+        sensor_button.bg_color.rgba = COLORS['accent']
+        sensor_button.bind(on_press=self.connect_sensor)
+        main_layout.add_widget(sensor_button)
+        
         # Save button
         save_button = RoundedButton(
             text='СОХРАНИТЬ ТРЕНИРОВКУ',
@@ -611,12 +715,31 @@ class WorkoutScreen(Screen):
         main_layout.add_widget(back_button)
         
         self.add_widget(main_layout)
+        
+        # Start BLE manager
+        sensor_manager.start_ble_loop()
+
+    def connect_sensor(self, instance):
+        """Connect to BLE sensor"""
+        self.sensor_label.text = 'Поиск датчика...'
+        sensor_manager.connect_sensor()
+        
+        # Start checking connection status
+        if not self.sensor_update_event:
+            self.sensor_update_event = Clock.schedule_interval(self.update_sensor_display, 0.5)
+
+    def update_sensor_display(self, dt):
+        """Update sensor data display"""
+        if sensor_manager.is_connected:
+            sensor_manager.read_sensor_data()
+            self.sensor_label.text = f'Напряжение мышцы: {sensor_manager.current_value}'
+        else:
+            self.sensor_label.text = 'Датчик: не подключен\nНажмите "ПОДКЛЮЧИТЬ ДАТЧИК"'
 
     def start_workout(self, instance):
         if not self.timer_running:
             self.timer_running = True
             self.timer_event = Clock.schedule_interval(self.update_timer, 1.0)
-            self.sensor_event = Clock.schedule_interval(self.collect_sensor_data, 0.5)
             self.sensor_label.text = 'Тренировка начата! Данные собираются...'
             print("Тренировка начата!")
 
@@ -625,30 +748,23 @@ class WorkoutScreen(Screen):
             self.timer_running = False
             if self.timer_event:
                 self.timer_event.cancel()
-            if hasattr(self, 'sensor_event'):
-                self.sensor_event.cancel()
             self.sensor_label.text = f'Тренировка остановлена. Время: {self.timer_label.text}'
             print(f"Тренировка остановлена. Время: {self.timer_label.text}")
 
-    def collect_sensor_data(self, dt):
-        if self.timer_running:
-            endurance = random.randint(50, 100)
-            power = random.randint(60, 120)
-            heart_rate = random.randint(70, 160)
-            
+    def collect_sensor_data(self):
+        """Collect sensor data from BLE manager"""
+        if self.timer_running and sensor_manager.is_connected:
             sensor_reading = {
                 'timestamp': self.time_elapsed,
-                'endurance': endurance,
-                'power': power,
-                'heart_rate': heart_rate
+                'tension': sensor_manager.current_value
             }
             
             self.sensor_data.append(sensor_reading)
-            self.sensor_label.text = f'Выносливость: {endurance} | Мощность: {power} | Пульс: {heart_rate}'
 
     def update_timer(self, dt):
         if self.timer_running:
             self.time_elapsed += 1
+            self.collect_sensor_data()
             minutes = self.time_elapsed // 60
             seconds = self.time_elapsed % 60
             self.timer_label.text = f'{minutes:02d}:{seconds:02d}'
@@ -660,24 +776,18 @@ class WorkoutScreen(Screen):
             workout_time = f'{minutes:02d}:{seconds:02d}'
             current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             
-            endurance_values = [data['endurance'] for data in self.sensor_data] if self.sensor_data else [0]
-            power_values = [data['power'] for data in self.sensor_data] if self.sensor_data else [0]
-            heart_rate_values = [data['heart_rate'] for data in self.sensor_data] if self.sensor_data else [0]
+            tension_values = [data['tension'] for data in self.sensor_data] if self.sensor_data else [0]
             
-            max_endurance = max(endurance_values)
-            avg_endurance = sum(endurance_values) / len(endurance_values)
-            min_endurance = min(endurance_values)
-            max_power = max(power_values)
-            avg_power = sum(power_values) / len(power_values)
-            max_heart_rate = max(heart_rate_values)
-            avg_heart_rate = sum(heart_rate_values) / len(heart_rate_values)
+            max_tension = max(tension_values) if tension_values else 0
+            avg_tension = sum(tension_values) / len(tension_values) if tension_values else 0
+            min_tension = min(tension_values) if tension_values else 0
             
             workout_id = datetime.now().strftime('%Y%m%d_%H%M%S')
             workout_folder = f'workouts/workout_{workout_id}'
             os.makedirs(workout_folder, exist_ok=True)
             
             graph_path = f'{workout_folder}/graph.png'
-            self.create_endurance_graph(self.sensor_data, graph_path, max_endurance, avg_endurance, min_endurance)
+            self.create_tension_graph(self.sensor_data, graph_path, max_tension, avg_tension, min_tension)
             
             workout_entry = {
                 'id': workout_id,
@@ -688,13 +798,9 @@ class WorkoutScreen(Screen):
                 'workout_folder': workout_folder,
                 'graph_path': graph_path,
                 'metrics': {
-                    'max_endurance': max_endurance,
-                    'avg_endurance': round(avg_endurance, 2),
-                    'min_endurance': min_endurance,
-                    'max_power': max_power,
-                    'avg_power': round(avg_power, 2),
-                    'max_heart_rate': max_heart_rate,
-                    'avg_heart_rate': round(avg_heart_rate, 2)
+                    'max_tension': max_tension,
+                    'avg_tension': round(avg_tension, 2),
+                    'min_tension': min_tension
                 }
             }
             
@@ -704,8 +810,6 @@ class WorkoutScreen(Screen):
                 if self.timer_running:
                     if self.timer_event:
                         self.timer_event.cancel()
-                    if hasattr(self, 'sensor_event'):
-                        self.sensor_event.cancel()
                     self.timer_running = False
                 self.time_elapsed = 0
                 self.sensor_data = []
@@ -716,34 +820,37 @@ class WorkoutScreen(Screen):
             else:
                 self.sensor_label.text = 'Ошибка сохранения тренировки'
 
-    def create_endurance_graph(self, sensor_data, save_path, max_endurance, avg_endurance, min_endurance):
+    def create_tension_graph(self, sensor_data, save_path, max_tension, avg_tension, min_tension):
         if not sensor_data:
             return
             
+        import matplotlib.pyplot as plt
+        
         times = [data['timestamp'] for data in sensor_data]
-        endurance = [data['endurance'] for data in sensor_data]
+        tension = [data['tension'] for data in sensor_data]
         
         plt.figure(figsize=(12, 8))
         
-        # Основной график выносливости
-        plt.plot(times, endurance, color='#2E86AB', linewidth=2.5, label='Выносливость', alpha=0.7)
+        # Основной график напряжения мышцы
+        plt.plot(times, tension, color='#2E86AB', linewidth=2.5, label='Напряжение мышцы', alpha=0.7)
         
         # Линии для максимального, среднего и минимального значений
-        plt.axhline(y=max_endurance, color='#FF6B6B', linestyle='--', linewidth=2, label=f'Макс: {max_endurance}')
-        plt.axhline(y=avg_endurance, color='#4ECDC4', linestyle='--', linewidth=2, label=f'Ср: {avg_endurance:.1f}')
-        plt.axhline(y=min_endurance, color='#45B7D1', linestyle='--', linewidth=2, label=f'Мин: {min_endurance}')
+        plt.axhline(y=max_tension, color='#FF6B6B', linestyle='--', linewidth=2, label=f'Макс: {max_tension}')
+        plt.axhline(y=avg_tension, color='#4ECDC4', linestyle='--', linewidth=2, label=f'Ср: {avg_tension:.1f}')
+        plt.axhline(y=min_tension, color='#45B7D1', linestyle='--', linewidth=2, label=f'Мин: {min_tension}')
         
         # Точки для максимального и минимального значений
-        max_index = endurance.index(max_endurance)
-        min_index = endurance.index(min_endurance)
-        
-        plt.scatter(times[max_index], max_endurance, color='#FF6B6B', s=100, zorder=5)
-        plt.scatter(times[min_index], min_endurance, color='#45B7D1', s=100, zorder=5)
+        if tension:
+            max_index = tension.index(max_tension)
+            min_index = tension.index(min_tension)
+            
+            plt.scatter(times[max_index], max_tension, color='#FF6B6B', s=100, zorder=5)
+            plt.scatter(times[min_index], min_tension, color='#45B7D1', s=100, zorder=5)
         
         # Заголовок и подписи
-        plt.title('Динамика выносливости во времени', fontsize=16, fontweight='bold', pad=20)
+        plt.title('Динамика напряжения мышцы во времени', fontsize=16, fontweight='bold', pad=20)
         plt.xlabel('Время (секунды)', fontsize=12, fontweight='bold')
-        plt.ylabel('Уровень выносливости', fontsize=12, fontweight='bold')
+        plt.ylabel('Уровень напряжения', fontsize=12, fontweight='bold')
         plt.legend()
         plt.grid(True, alpha=0.3)
         
@@ -793,9 +900,12 @@ class WorkoutScreen(Screen):
         if self.timer_running:
             if self.timer_event:
                 self.timer_event.cancel()
-            if hasattr(self, 'sensor_event'):
-                self.sensor_event.cancel()
             self.timer_running = False
+        
+        if self.sensor_update_event:
+            self.sensor_update_event.cancel()
+            
+        sensor_manager.disconnect_sensor()
         self.manager.current = 'workout_menu'
 
 class WorkoutDetailScreen(Screen):
@@ -841,7 +951,7 @@ class WorkoutDetailScreen(Screen):
     def load_workout_data(self, workout):
         self.detail_layout.clear_widgets()
         
-        # Basic info - removed duration
+        # Basic info
         info_card = CardLayout(height=100)
         info_layout = GridLayout(cols=2, size_hint_y=1, spacing=10, padding=10)
         
@@ -868,13 +978,13 @@ class WorkoutDetailScreen(Screen):
         info_card.add_widget(info_layout)
         self.detail_layout.add_widget(info_card)
         
-        # Workout metrics - only endurance metrics
+        # Workout metrics - only tension metrics
         metrics = workout.get('metrics', {})
         metrics_card = CardLayout(height=150)
         metrics_content = BoxLayout(orientation='vertical', spacing=10, padding=15)
         
         metrics_title = Label(
-            text='МЕТРИКИ ВЫНОСЛИВОСТИ',
+            text='МЕТРИКИ НАПРЯЖЕНИЯ МЫШЦЫ',
             font_size='18sp',
             color=COLORS['primary'],
             bold=True,
@@ -884,16 +994,16 @@ class WorkoutDetailScreen(Screen):
         
         metrics_grid = GridLayout(cols=2, size_hint_y=0.8, spacing=15)
         
-        # Calculate min endurance if not present
-        min_endurance = metrics.get('min_endurance', 0)
-        if min_endurance == 0 and workout.get('sensor_data'):
-            endurance_values = [data['endurance'] for data in workout['sensor_data']]
-            min_endurance = min(endurance_values) if endurance_values else 0
+        # Calculate min tension if not present
+        min_tension = metrics.get('min_tension', 0)
+        if min_tension == 0 and workout.get('sensor_data'):
+            tension_values = [data['tension'] for data in workout['sensor_data']]
+            min_tension = min(tension_values) if tension_values else 0
         
         metrics_data = [
-            ('Макс. выносливость:', f"{metrics.get('max_endurance', 0):.0f}"),
-            ('Ср. выносливость:', f"{metrics.get('avg_endurance', 0):.1f}"),
-            ('Мин. выносливость:', f"{min_endurance:.0f}")
+            ('Макс. напряжение:', f"{metrics.get('max_tension', 0):.0f}"),
+            ('Ср. напряжение:', f"{metrics.get('avg_tension', 0):.1f}"),
+            ('Мин. напряжение:', f"{min_tension:.0f}")
         ]
         
         for label, value in metrics_data:
@@ -924,7 +1034,7 @@ class WorkoutDetailScreen(Screen):
             graph_content = BoxLayout(orientation='vertical', spacing=10, padding=15)
             
             graph_title = Label(
-                text='ДИНАМИКА ВЫНОСЛИВОСТИ',
+                text='ДИНАМИКА НАПРЯЖЕНИЯ МЫШЦЫ',
                 font_size='18sp',
                 color=COLORS['primary'],
                 bold=True,
