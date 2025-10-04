@@ -1,50 +1,91 @@
-from micropython import const
-import asyncio
-import aioble
-import bluetooth
 from machine import UART, Pin
+import ubluetooth
+import time
 
-# UART для связи с Arduino
-uart = UART(1, baudrate=9600, tx=19, rx=21)  # Пины и скорость можно изменить
+# UART настройка
+uart = UART(1, baudrate=9600, tx=Pin(19), rx=Pin(21))
 
-# BLE UUID
-_BLE_SERVICE_UUID = bluetooth.UUID('19b10000-e8f2-537e-4f6c-d104768a1214')
-_BLE_SENSOR_CHAR_UUID = bluetooth.UUID('19b10001-e8f2-537e-4f6c-d104768a1214')
-_ADV_INTERVAL_MS = 250_000
+class BLEManager:
+    def __init__(self):
+        self.ble = ubluetooth.BLE()
+        self.ble.active(True)
+        self.ble.irq(self.ble_irq)
+        self.connected = False
+        self.setup_ble()
+        
+    def setup_ble(self):
+        # BLE служба и характеристика
+        service_uuid = '19b10000-e8f2-537e-4f6c-d104768a1214'
+        char_uuid = '19b10001-e8f2-537e-4f6c-d104768a1214'
+        
+        service = (ubluetooth.UUID(service_uuid),)
+        characteristic = (
+            ubluetooth.UUID(char_uuid),
+            ubluetooth.FLAG_READ | ubluetooth.FLAG_NOTIFY,
+        )
+        
+        service_ble = (service, (characteristic,))
+        services = (service_ble,)
+        
+        ((self.char_handle,),) = self.ble.gatts_register_services(services)
+        
+        # Настройка рекламы
+        name = b'EMG-Sensor'
+        adv_data = bytearray()
+        adv_data.extend(bytes([0x02, 0x01, 0x06]))  # Flags
+        adv_data.extend(bytes([len(name) + 1, 0x09]))  # Complete local name
+        adv_data.extend(name)
+        
+        # Добавляем UUID службы в рекламу
+        service_uuid_bytes = bytes.fromhex(service_uuid.replace('-', ''))
+        adv_data.extend(bytes([1 + len(service_uuid_bytes), 0x06]))
+        adv_data.extend(service_uuid_bytes)
+        
+        self.ble.gap_advertise(100000, adv_data)  # Рекламируем каждые 100ms
+        print("🚀 BLE Server запущен")
 
-# Регистрация сервиса
-ble_service = aioble.Service(_BLE_SERVICE_UUID)
-sensor_characteristic = aioble.Characteristic(ble_service, _BLE_SENSOR_CHAR_UUID, read=True, notify=True)
-aioble.register_services(ble_service)
+    def ble_irq(self, event, data):
+        if event == 1:  # _IRQ_CENTRAL_CONNECTED
+            self.connected = True
+            print("✅ Устройство подключено")
+        elif event == 2:  # _IRQ_CENTRAL_DISCONNECTED
+            self.connected = False
+            print("🔌 Устройство отключено")
+            # Перезапускаем рекламу
+            self.ble.gap_advertise(100000, self.adv_data)
+        elif event == 3:  # _IRQ_GATTS_WRITE
+            print("📨 Получены данные от клиента")
 
-def _encode_data(data):
-    return str(data).encode('utf-8')
-
-async def sensor_task():
-    while True:
-        if uart.any():
-            data = uart.readline().strip()
+    def send_data(self, data):
+        if self.connected:
             try:
-                emg_value = int(data)
-                sensor_characteristic.write(_encode_data(emg_value), send_update=True)
-                print('Отправлено по BLE: ', emg_value)
-            except ValueError:
-                print('Неверные данные от UART')
-        await asyncio.sleep_ms(100)
+                self.ble.gatts_write(self.char_handle, data)
+                self.ble.gatts_notify(0, self.char_handle, data)
+                return True
+            except Exception as e:
+                print(f"❌ Ошибка отправки: {e}")
+                self.connected = False
+        return False
 
-async def peripheral_task():
-    while True:
-        async with await aioble.advertise(
-            _ADV_INTERVAL_MS,
-            name="Оно живое!",
-            services=[_BLE_SERVICE_UUID],
-        ) as connection:
-            print("Соединение от", connection.device)
-            await connection.disconnected()
+# Основной цикл
+ble = BLEManager()
+counter = 0
 
-async def main():
-    t1 = asyncio.create_task(sensor_task())
-    t2 = asyncio.create_task(peripheral_task())
-    await asyncio.gather(t1, t2)
+print("🔄 Запуск основного цикла...")
 
-asyncio.run(main())
+while True:
+    # Проверяем UART данные
+    if uart.any():
+        data = uart.readline()
+        if data:
+            data = data.strip()
+            print(f"📨 UART данные: {data}")
+            ble.send_data(data)
+    else:
+        # Отправляем тестовые данные
+        test_data = f"Test:{counter}".encode()
+        if ble.send_data(test_data):
+            print(f"📤 Отправлено: {test_data}")
+            counter += 1
+    
+    time.sleep(1)
