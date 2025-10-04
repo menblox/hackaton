@@ -1,0 +1,97 @@
+{
+  "type": "\u0421\u0438\u043b\u043e\u0432\u0430\u044f",
+  "duration": 7,
+  "timestamp": "2025-10-04 16:21:17",
+  "sensor_data": [
+    {
+      "time": 0,
+      "endurance": 68,
+      "power": 90
+    },
+    {
+      "time": 1,
+      "endurance": 61,
+      "power": 79
+    },
+    {
+      "time": 1,
+      "endurance": 95,
+      "power": 90
+    },
+    {
+      "time": 2,
+      "endurance": 93,
+      "power": 85
+    },
+    {
+      "time": 2,
+      "endurance": 100,
+      "power": 115
+    },
+    {
+      "time": 3,
+      "endurance": 69,
+      "power": 74
+    },
+    {
+      "time": 3,
+      "endurance": 56,
+      "power": 92
+    },
+    {
+      "time": 4,
+      "endurance": 90,
+      "power": 119
+    },
+    {
+      "time": 4,
+      "endurance": 83,
+      "power": 78
+    },
+    {
+      "time": 5,
+      "endurance": 75,
+      "power": 86
+    },
+    {
+      "time": 5,
+      "endurance": 62,
+      "power": 74
+    },
+    {
+      "time": 6,
+      "endurance": 53,
+      "power": 99
+    },
+    {
+      "time": 6,
+      "endurance": 90,
+      "power": 68
+    },
+    {
+      "time": 7,
+      "endurance": 71,
+      "power": 85
+    },
+    {
+      "time": 7,
+      "endurance": 78,
+      "power": 111
+    },
+    {
+      "time": 7,
+      "endurance": 81,
+      "power": 94
+    },
+    {
+      "time": 7,
+      "endurance": 79,
+      "power": 85
+    },
+    {
+      "time": 7,
+      "endurance": 72,
+      "power": 64
+    }
+  ]
+}
