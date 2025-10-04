@@ -178,14 +178,8 @@ class WorkoutMenuScreen(Screen):
         history_card = CardLayout(height=120)
         history_content = BoxLayout(orientation='horizontal', spacing=15)
         
-        # Icon replaced with text
-        history_icon = Label(
-            text='H',
-            font_size='40sp',
-            size_hint_x=0.3,
-            color=COLORS['primary'],
-            bold=True
-        )
+        # History icon area (empty now)
+        history_icon = BoxLayout(size_hint_x=0.3)
         
         history_text = BoxLayout(orientation='vertical')
         history_title = Label(
@@ -221,13 +215,8 @@ class WorkoutMenuScreen(Screen):
         workout_card = CardLayout(height=120)
         workout_content = BoxLayout(orientation='horizontal', spacing=15)
         
-        workout_icon = Label(
-            text='W',
-            font_size='40sp',
-            size_hint_x=0.3,
-            color=COLORS['primary'],
-            bold=True
-        )
+        # Workout icon area (empty now)
+        workout_icon = BoxLayout(size_hint_x=0.3)
         
         workout_text = BoxLayout(orientation='vertical')
         workout_title = Label(
@@ -677,6 +666,7 @@ class WorkoutScreen(Screen):
             
             max_endurance = max(endurance_values)
             avg_endurance = sum(endurance_values) / len(endurance_values)
+            min_endurance = min(endurance_values)
             max_power = max(power_values)
             avg_power = sum(power_values) / len(power_values)
             max_heart_rate = max(heart_rate_values)
@@ -687,7 +677,7 @@ class WorkoutScreen(Screen):
             os.makedirs(workout_folder, exist_ok=True)
             
             graph_path = f'{workout_folder}/graph.png'
-            self.create_workout_graph(self.sensor_data, graph_path)
+            self.create_endurance_graph(self.sensor_data, graph_path, max_endurance, avg_endurance, min_endurance)
             
             workout_entry = {
                 'id': workout_id,
@@ -700,6 +690,7 @@ class WorkoutScreen(Screen):
                 'metrics': {
                     'max_endurance': max_endurance,
                     'avg_endurance': round(avg_endurance, 2),
+                    'min_endurance': min_endurance,
                     'max_power': max_power,
                     'avg_power': round(avg_power, 2),
                     'max_heart_rate': max_heart_rate,
@@ -725,36 +716,36 @@ class WorkoutScreen(Screen):
             else:
                 self.sensor_label.text = 'Ошибка сохранения тренировки'
 
-    def create_workout_graph(self, sensor_data, save_path):
+    def create_endurance_graph(self, sensor_data, save_path, max_endurance, avg_endurance, min_endurance):
         if not sensor_data:
             return
             
         times = [data['timestamp'] for data in sensor_data]
         endurance = [data['endurance'] for data in sensor_data]
-        power = [data['power'] for data in sensor_data]
-        heart_rate = [data['heart_rate'] for data in sensor_data]
         
         plt.figure(figsize=(12, 8))
         
-        plt.subplot(3, 1, 1)
-        plt.plot(times, endurance, color='#2E86AB', linewidth=2.5, label='Выносливость')
-        plt.title('Динамика показателей во время тренировки', fontsize=14, fontweight='bold')
-        plt.ylabel('Выносливость', fontweight='bold')
-        plt.grid(True, alpha=0.3)
-        plt.legend()
+        # Основной график выносливости
+        plt.plot(times, endurance, color='#2E86AB', linewidth=2.5, label='Выносливость', alpha=0.7)
         
-        plt.subplot(3, 1, 2)
-        plt.plot(times, power, color='#A23B72', linewidth=2.5, label='Мощность')
-        plt.ylabel('Мощность', fontweight='bold')
-        plt.grid(True, alpha=0.3)
-        plt.legend()
+        # Линии для максимального, среднего и минимального значений
+        plt.axhline(y=max_endurance, color='#FF6B6B', linestyle='--', linewidth=2, label=f'Макс: {max_endurance}')
+        plt.axhline(y=avg_endurance, color='#4ECDC4', linestyle='--', linewidth=2, label=f'Ср: {avg_endurance:.1f}')
+        plt.axhline(y=min_endurance, color='#45B7D1', linestyle='--', linewidth=2, label=f'Мин: {min_endurance}')
         
-        plt.subplot(3, 1, 3)
-        plt.plot(times, heart_rate, color='#F18F01', linewidth=2.5, label='Пульс')
-        plt.xlabel('Время (секунды)', fontweight='bold')
-        plt.ylabel('Пульс (уд/мин)', fontweight='bold')
-        plt.grid(True, alpha=0.3)
+        # Точки для максимального и минимального значений
+        max_index = endurance.index(max_endurance)
+        min_index = endurance.index(min_endurance)
+        
+        plt.scatter(times[max_index], max_endurance, color='#FF6B6B', s=100, zorder=5)
+        plt.scatter(times[min_index], min_endurance, color='#45B7D1', s=100, zorder=5)
+        
+        # Заголовок и подписи
+        plt.title('Динамика выносливости во времени', fontsize=16, fontweight='bold', pad=20)
+        plt.xlabel('Время (секунды)', fontsize=12, fontweight='bold')
+        plt.ylabel('Уровень выносливости', fontsize=12, fontweight='bold')
         plt.legend()
+        plt.grid(True, alpha=0.3)
         
         plt.tight_layout()
         plt.savefig(save_path, dpi=100, bbox_inches='tight', facecolor='#F8F9FA')
@@ -850,14 +841,13 @@ class WorkoutDetailScreen(Screen):
     def load_workout_data(self, workout):
         self.detail_layout.clear_widgets()
         
-        # Basic info
-        info_card = CardLayout(height=140)
+        # Basic info - removed duration
+        info_card = CardLayout(height=100)
         info_layout = GridLayout(cols=2, size_hint_y=1, spacing=10, padding=10)
         
         info_data = [
             ('Дата:', workout.get('date', 'Неизвестно')),
-            ('Время тренировки:', workout.get('time', '00:00')),
-            ('Длительность (сек):', str(workout.get('duration_seconds', 0)))
+            ('Время тренировки:', workout.get('time', '00:00'))
         ]
         
         for label, value in info_data:
@@ -878,13 +868,13 @@ class WorkoutDetailScreen(Screen):
         info_card.add_widget(info_layout)
         self.detail_layout.add_widget(info_card)
         
-        # Workout metrics
+        # Workout metrics - only endurance metrics
         metrics = workout.get('metrics', {})
-        metrics_card = CardLayout(height=220)
+        metrics_card = CardLayout(height=150)
         metrics_content = BoxLayout(orientation='vertical', spacing=10, padding=15)
         
         metrics_title = Label(
-            text='МЕТРИКИ ТРЕНИРОВКИ',
+            text='МЕТРИКИ ВЫНОСЛИВОСТИ',
             font_size='18sp',
             color=COLORS['primary'],
             bold=True,
@@ -894,13 +884,16 @@ class WorkoutDetailScreen(Screen):
         
         metrics_grid = GridLayout(cols=2, size_hint_y=0.8, spacing=15)
         
+        # Calculate min endurance if not present
+        min_endurance = metrics.get('min_endurance', 0)
+        if min_endurance == 0 and workout.get('sensor_data'):
+            endurance_values = [data['endurance'] for data in workout['sensor_data']]
+            min_endurance = min(endurance_values) if endurance_values else 0
+        
         metrics_data = [
             ('Макс. выносливость:', f"{metrics.get('max_endurance', 0):.0f}"),
             ('Ср. выносливость:', f"{metrics.get('avg_endurance', 0):.1f}"),
-            ('Макс. мощность:', f"{metrics.get('max_power', 0):.0f}"),
-            ('Ср. мощность:', f"{metrics.get('avg_power', 0):.1f}"),
-            ('Макс. пульс:', f"{metrics.get('max_heart_rate', 0):.0f}"),
-            ('Ср. пульс:', f"{metrics.get('avg_heart_rate', 0):.1f}")
+            ('Мин. выносливость:', f"{min_endurance:.0f}")
         ]
         
         for label, value in metrics_data:
@@ -931,7 +924,7 @@ class WorkoutDetailScreen(Screen):
             graph_content = BoxLayout(orientation='vertical', spacing=10, padding=15)
             
             graph_title = Label(
-                text='ГРАФИК ПОКАЗАТЕЛЕЙ',
+                text='ДИНАМИКА ВЫНОСЛИВОСТИ',
                 font_size='18sp',
                 color=COLORS['primary'],
                 bold=True,
@@ -967,38 +960,6 @@ class WorkoutDetailScreen(Screen):
             )
             no_graph_card.add_widget(no_graph_label)
             self.detail_layout.add_widget(no_graph_card)
-        
-        # Sensor summary
-        sensor_data = workout.get('sensor_data', [])
-        if sensor_data:
-            summary_card = CardLayout(height=120)
-            summary_content = BoxLayout(orientation='vertical', spacing=8, padding=15)
-            
-            summary_title = Label(
-                text='СВОДКА ПО ДАТЧИКАМ',
-                font_size='16sp',
-                color=COLORS['primary'],
-                bold=True,
-                size_hint_y=0.3
-            )
-            
-            summary_text = (f"• Всего записей: {len(sensor_data)}\n"
-                          f"• Период измерения: {sensor_data[0].get('timestamp', 0)} - {sensor_data[-1].get('timestamp', 0)} сек\n"
-                          f"• Частота измерений: {len(sensor_data) / workout.get('duration_seconds', 1):.2f} записей/сек")
-            
-            summary_label = Label(
-                text=summary_text,
-                font_size='14sp',
-                color=COLORS['text_primary'],
-                size_hint_y=0.7,
-                halign='left'
-            )
-            summary_label.bind(size=summary_label.setter('text_size'))
-            
-            summary_content.add_widget(summary_title)
-            summary_content.add_widget(summary_label)
-            summary_card.add_widget(summary_content)
-            self.detail_layout.add_widget(summary_card)
         
         self.detail_layout.height = self.detail_layout.minimum_height
     

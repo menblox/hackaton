@@ -1,328 +1,59 @@
 {
   "workouts": [
     {
-      "id": "20251004_215729",
-      "time": "00:13",
-      "date": "2025-10-04 21:57:29",
-      "duration_seconds": 13,
+      "id": "20251005_013044",
+      "time": "00:02",
+      "date": "2025-10-05 01:30:44",
+      "duration_seconds": 2,
       "sensor_data": [
         {
           "timestamp": 0,
-          "endurance": 59,
-          "power": 93,
-          "heart_rate": 73
-        },
-        {
-          "timestamp": 1,
-          "endurance": 100,
-          "power": 65,
-          "heart_rate": 144
-        },
-        {
-          "timestamp": 1,
-          "endurance": 97,
-          "power": 64,
-          "heart_rate": 131
-        },
-        {
-          "timestamp": 2,
-          "endurance": 89,
-          "power": 70,
-          "heart_rate": 107
-        },
-        {
-          "timestamp": 2,
-          "endurance": 99,
-          "power": 116,
-          "heart_rate": 120
-        },
-        {
-          "timestamp": 3,
-          "endurance": 62,
-          "power": 97,
-          "heart_rate": 98
-        },
-        {
-          "timestamp": 3,
-          "endurance": 59,
-          "power": 90,
-          "heart_rate": 146
-        },
-        {
-          "timestamp": 4,
-          "endurance": 70,
-          "power": 62,
-          "heart_rate": 86
-        },
-        {
-          "timestamp": 4,
           "endurance": 79,
-          "power": 102,
-          "heart_rate": 73
+          "power": 87,
+          "heart_rate": 83
         },
         {
-          "timestamp": 5,
-          "endurance": 73,
-          "power": 89,
-          "heart_rate": 105
-        },
-        {
-          "timestamp": 5,
-          "endurance": 85,
-          "power": 91,
-          "heart_rate": 140
-        },
-        {
-          "timestamp": 6,
-          "endurance": 97,
-          "power": 107,
-          "heart_rate": 73
-        },
-        {
-          "timestamp": 6,
-          "endurance": 83,
-          "power": 96,
-          "heart_rate": 125
-        },
-        {
-          "timestamp": 7,
-          "endurance": 65,
-          "power": 91,
-          "heart_rate": 103
-        },
-        {
-          "timestamp": 7,
-          "endurance": 67,
-          "power": 92,
+          "timestamp": 1,
+          "endurance": 95,
+          "power": 87,
           "heart_rate": 81
         },
         {
-          "timestamp": 8,
-          "endurance": 95,
-          "power": 97,
-          "heart_rate": 147
-        },
-        {
-          "timestamp": 8,
-          "endurance": 71,
-          "power": 108,
-          "heart_rate": 106
-        },
-        {
-          "timestamp": 9,
-          "endurance": 54,
-          "power": 111,
-          "heart_rate": 150
-        },
-        {
-          "timestamp": 9,
-          "endurance": 81,
-          "power": 117,
-          "heart_rate": 129
-        },
-        {
-          "timestamp": 10,
-          "endurance": 74,
-          "power": 63,
-          "heart_rate": 75
-        },
-        {
-          "timestamp": 10,
-          "endurance": 99,
-          "power": 83,
-          "heart_rate": 119
-        },
-        {
-          "timestamp": 11,
-          "endurance": 86,
-          "power": 111,
-          "heart_rate": 141
-        },
-        {
-          "timestamp": 11,
-          "endurance": 91,
-          "power": 66,
-          "heart_rate": 116
-        },
-        {
-          "timestamp": 12,
-          "endurance": 68,
-          "power": 67,
-          "heart_rate": 104
-        },
-        {
-          "timestamp": 12,
-          "endurance": 71,
-          "power": 85,
-          "heart_rate": 73
-        },
-        {
-          "timestamp": 13,
-          "endurance": 97,
-          "power": 99,
-          "heart_rate": 121
-        }
-      ],
-      "workout_folder": "workouts/workout_20251004_215729",
-      "graph_path": "workouts/workout_20251004_215729/graph.png",
-      "metrics": {
-        "max_endurance": 100,
-        "avg_endurance": 79.65,
-        "max_power": 117,
-        "avg_power": 89.69,
-        "max_heart_rate": 150,
-        "avg_heart_rate": 111.0
-      }
-    },
-    {
-      "id": "20251004_222722",
-      "time": "00:05",
-      "date": "2025-10-04 22:27:22",
-      "duration_seconds": 5,
-      "sensor_data": [
-        {
-          "timestamp": 0,
-          "endurance": 57,
-          "power": 96,
-          "heart_rate": 113
-        },
-        {
           "timestamp": 1,
-          "endurance": 74,
-          "power": 80,
-          "heart_rate": 135
-        },
-        {
-          "timestamp": 1,
-          "endurance": 92,
-          "power": 61,
-          "heart_rate": 111
-        },
-        {
-          "timestamp": 2,
-          "endurance": 52,
-          "power": 114,
-          "heart_rate": 130
-        },
-        {
-          "timestamp": 2,
           "endurance": 87,
-          "power": 112,
-          "heart_rate": 96
+          "power": 79,
+          "heart_rate": 84
         },
         {
           "timestamp": 2,
-          "endurance": 73,
-          "power": 77,
-          "heart_rate": 140
-        },
-        {
-          "timestamp": 3,
-          "endurance": 65,
-          "power": 100,
-          "heart_rate": 151
-        },
-        {
-          "timestamp": 3,
           "endurance": 60,
-          "power": 74,
-          "heart_rate": 100
-        },
-        {
-          "timestamp": 4,
-          "endurance": 91,
-          "power": 90,
-          "heart_rate": 144
-        },
-        {
-          "timestamp": 5,
-          "endurance": 98,
-          "power": 117,
-          "heart_rate": 106
-        },
-        {
-          "timestamp": 5,
-          "endurance": 58,
-          "power": 110,
-          "heart_rate": 109
-        }
-      ],
-      "workout_folder": "workouts/workout_20251004_222722",
-      "graph_path": "workouts/workout_20251004_222722/graph.png",
-      "metrics": {
-        "max_endurance": 98,
-        "avg_endurance": 73.36,
-        "max_power": 117,
-        "avg_power": 93.73,
-        "max_heart_rate": 151,
-        "avg_heart_rate": 121.36
-      }
-    },
-    {
-      "id": "20251004_223912",
-      "time": "00:03",
-      "date": "2025-10-04 22:39:12",
-      "duration_seconds": 3,
-      "sensor_data": [
-        {
-          "timestamp": 0,
-          "endurance": 67,
-          "power": 112,
-          "heart_rate": 75
-        },
-        {
-          "timestamp": 1,
-          "endurance": 76,
-          "power": 71,
-          "heart_rate": 107
-        },
-        {
-          "timestamp": 1,
-          "endurance": 90,
-          "power": 115,
-          "heart_rate": 137
+          "power": 80,
+          "heart_rate": 105
         },
         {
           "timestamp": 2,
-          "endurance": 81,
-          "power": 113,
-          "heart_rate": 141
-        },
-        {
-          "timestamp": 2,
-          "endurance": 79,
-          "power": 91,
-          "heart_rate": 92
-        },
-        {
-          "timestamp": 3,
-          "endurance": 62,
-          "power": 101,
+          "endurance": 80,
+          "power": 120,
           "heart_rate": 89
-        },
-        {
-          "timestamp": 3,
-          "endurance": 58,
-          "power": 95,
-          "heart_rate": 124
         }
       ],
-      "workout_folder": "workouts/workout_20251004_223912",
-      "graph_path": "workouts/workout_20251004_223912/graph.png",
+      "workout_folder": "workouts/workout_20251005_013044",
+      "graph_path": "workouts/workout_20251005_013044/graph.png",
       "metrics": {
-        "max_endurance": 90,
-        "avg_endurance": 73.29,
-        "max_power": 115,
-        "avg_power": 99.71,
-        "max_heart_rate": 141,
-        "avg_heart_rate": 109.29
+        "max_endurance": 95,
+        "avg_endurance": 80.2,
+        "min_endurance": 60,
+        "max_power": 120,
+        "avg_power": 90.6,
+        "max_heart_rate": 105,
+        "avg_heart_rate": 88.4
       }
     }
   ],
   "statistics": {
-    "total_workouts": 3,
-    "total_duration_seconds": 21,
-    "average_duration_seconds": 7.0,
-    "last_update": "2025-10-04 22:39:14"
+    "total_workouts": 1,
+    "total_duration_seconds": 2,
+    "average_duration_seconds": 2.0,
+    "last_update": "2025-10-05 01:30:46"
   }
 }
