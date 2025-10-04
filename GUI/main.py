@@ -2,7 +2,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition, SlideTransition
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
@@ -10,7 +10,6 @@ from kivy.core.window import Window
 from kivy.clock import Clock
 from kivy.uix.image import Image
 from kivy.graphics import Color, Rectangle, RoundedRectangle
-from kivy.properties import ObjectProperty
 from kivy.utils import get_color_from_hex
 import json
 import os
@@ -33,14 +32,14 @@ COLORS = {
     'card_bg': get_color_from_hex('#FFFFFF'),
     'text_primary': get_color_from_hex('#212529'),
     'text_secondary': get_color_from_hex('#546E7A'),
-    'button_start': get_color_from_hex('#F18F01'),  # New contrast color for start button
+    'button_start': get_color_from_hex('#F18F01'),
 }
 
 class RoundedButton(Button):
     def __init__(self, **kwargs):
         super(RoundedButton, self).__init__(**kwargs)
         self.background_color = (0, 0, 0, 0)
-        self.background_normal = ''  # Important for solid colors:cite[1]
+        self.background_normal = ''
         with self.canvas.before:
             self.bg_color = Color(*COLORS['primary'])
             self.rect = RoundedRectangle(
@@ -91,14 +90,14 @@ class MainScreen(Screen):
         
         layout = FloatLayout()
         
-        # Фоновый градиент
+        # Background gradient
         with layout.canvas.before:
             Color(*COLORS['primary'])
             Rectangle(pos=(0, 0), size=Window.size)
             Color(*get_color_from_hex('#1A5276'))
             Rectangle(pos=(0, Window.size[1] * 0.4), size=(Window.size[0], Window.size[1] * 0.6))
         
-        # Заголовок
+        # Title
         title_label = Label(
             text='Fitness Tracker',
             font_size='42sp',
@@ -124,7 +123,7 @@ class MainScreen(Screen):
         subtitle_label.bind(texture_size=subtitle_label.setter('size'))
         layout.add_widget(subtitle_label)
         
-        # Центральная кнопка С ИЗМЕНЕННЫМ ЦВЕТОМ ДЛЯ КОНТРАСТА
+        # Start button with contrast color
         start_button = RoundedButton(
             text='НАЧАТЬ',
             font_size='24sp',
@@ -132,7 +131,6 @@ class MainScreen(Screen):
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
             color=COLORS['white']
         )
-        # Устанавливаем новый контрастный цвет для кнопки:cite[3]:cite[5]
         start_button.bg_color.rgba = COLORS['button_start']
         start_button.bind(on_press=self.switch_to_workout_menu)
         layout.add_widget(start_button)
@@ -149,12 +147,12 @@ class WorkoutMenuScreen(Screen):
         
         layout = FloatLayout()
         
-        # Фон
+        # Background
         with layout.canvas.before:
             Color(*COLORS['light'])
             Rectangle(pos=(0, 0), size=Window.size)
         
-        # Заголовок
+        # Title
         title_label = Label(
             text='Меню тренировок',
             font_size='32sp',
@@ -168,7 +166,7 @@ class WorkoutMenuScreen(Screen):
         title_label.bind(texture_size=title_label.setter('size'))
         layout.add_widget(title_label)
         
-        # Карточки меню
+        # Menu cards layout
         menu_layout = BoxLayout(
             orientation='vertical',
             spacing=20,
@@ -176,16 +174,17 @@ class WorkoutMenuScreen(Screen):
             pos_hint={'center_x': 0.5, 'center_y': 0.5}
         )
         
-        # Кнопка просмотра истории
+        # History card
         history_card = CardLayout(height=120)
         history_content = BoxLayout(orientation='horizontal', spacing=15)
         
-        # Эмодзи с исправленным отображением
+        # Icon replaced with text
         history_icon = Label(
-            text='📊',
+            text='H',
             font_size='40sp',
             size_hint_x=0.3,
-            font_name='DejaVuSans'  # Шрифт, который лучше поддерживает эмодзи
+            color=COLORS['primary'],
+            bold=True
         )
         
         history_text = BoxLayout(orientation='vertical')
@@ -214,23 +213,20 @@ class WorkoutMenuScreen(Screen):
         
         history_card.add_widget(history_content)
         
-        history_button = Button(
-            size_hint=(1, 1),
-            background_color=(0, 0, 0, 0),
-            background_normal=''  # Для прозрачного фона:cite[1]
-        )
-        history_button.bind(on_press=self.switch_to_history)
-        history_card.add_widget(history_button)
+        # Make the entire card clickable
+        history_card.bind(on_touch_down=lambda instance, touch: 
+                         instance.collide_point(*touch.pos) and self.switch_to_history(instance))
         
-        # Кнопка начала тренировки
+        # Workout card
         workout_card = CardLayout(height=120)
         workout_content = BoxLayout(orientation='horizontal', spacing=15)
         
         workout_icon = Label(
-            text='💪',
+            text='W',
             font_size='40sp',
             size_hint_x=0.3,
-            font_name='DejaVuSans'  # Шрифт, который лучше поддерживает эмодзи
+            color=COLORS['primary'],
+            bold=True
         )
         
         workout_text = BoxLayout(orientation='vertical')
@@ -259,19 +255,15 @@ class WorkoutMenuScreen(Screen):
         
         workout_card.add_widget(workout_content)
         
-        workout_button = Button(
-            size_hint=(1, 1),
-            background_color=(0, 0, 0, 0),
-            background_normal=''  # Для прозрачного фона
-        )
-        workout_button.bind(on_press=self.switch_to_workouts)
-        workout_card.add_widget(workout_button)
+        # Make the entire card clickable
+        workout_card.bind(on_touch_down=lambda instance, touch: 
+                         instance.collide_point(*touch.pos) and self.switch_to_workouts(instance))
         
         menu_layout.add_widget(history_card)
         menu_layout.add_widget(workout_card)
         layout.add_widget(menu_layout)
         
-        # Кнопка назад - ИСПРАВЛЕН ЦВЕТ ДЛЯ ВИДИМОСТИ
+        # Back button
         back_button = RoundedButton(
             text='Назад',
             font_size='18sp',
@@ -279,7 +271,7 @@ class WorkoutMenuScreen(Screen):
             pos_hint={'center_x': 0.5, 'y': 0.05},
             color=COLORS['white']
         )
-        back_button.bg_color.rgba = COLORS['secondary']  # Новый цвет для лучшей видимости
+        back_button.bg_color.rgba = COLORS['secondary']
         back_button.bind(on_press=self.switch_to_main)
         layout.add_widget(back_button)
         
@@ -301,7 +293,7 @@ class HistoryScreen(Screen):
         
         main_layout = BoxLayout(orientation='vertical', padding=20, spacing=20)
         
-        # Заголовок
+        # Title
         title = Label(
             text='История тренировок',
             font_size='28sp',
@@ -311,12 +303,11 @@ class HistoryScreen(Screen):
         )
         main_layout.add_widget(title)
         
-        # Область с тренировками
+        # Workouts area
         scroll_view = ScrollView(
             size_hint=(1, 0.75),
             do_scroll_x=False,
             do_scroll_y=True,
-            scroll_type=['bars', 'content'],
             bar_width=10,
             bar_color=COLORS['primary']
         )
@@ -330,7 +321,7 @@ class HistoryScreen(Screen):
         scroll_view.add_widget(self.history_layout)
         main_layout.add_widget(scroll_view)
         
-        # Кнопки
+        # Buttons
         buttons_layout = BoxLayout(size_hint_y=0.15, spacing=15, padding=10)
         
         clear_btn = RoundedButton(
@@ -346,7 +337,7 @@ class HistoryScreen(Screen):
             font_size='16sp',
             color=COLORS['white']
         )
-        back_btn.bg_color.rgba = COLORS['secondary']  # Измененный цвет для видимости
+        back_btn.bg_color.rgba = COLORS['secondary']
         back_btn.bind(on_press=self.switch_to_workout_menu)
         
         buttons_layout.add_widget(clear_btn)
@@ -379,106 +370,94 @@ class HistoryScreen(Screen):
                     self.history_layout.height = self.history_layout.minimum_height
                 else:
                     no_workouts_label = Label(
-                        text='📊 Нет сохраненных тренировок\n\nНачните тренировку и сохраните ее,\nчтобы увидеть здесь историю',
+                        text='Нет сохраненных тренировок\n\nНачните тренировку и сохраните ее,\nчтобы увидеть здесь историю',
                         font_size='18sp',
                         size_hint_y=None,
                         height=200,
                         halign='center',
                         valign='middle',
-                        color=COLORS['text_secondary'],
-                        font_name='DejaVuSans'
+                        color=COLORS['text_secondary']
                     )
                     no_workouts_label.bind(size=no_workouts_label.setter('text_size'))
                     self.history_layout.add_widget(no_workouts_label)
             else:
                 no_db_label = Label(
-                    text='📁 База данных не найдена\n\nСохраните первую тренировку,\nчтобы создать базу данных',
+                    text='База данных не найдена\n\nСохраните первую тренировку,\nчтобы создать базу данных',
                     font_size='18sp',
                     size_hint_y=None,
                     height=200,
                     halign='center',
                     valign='middle',
-                    color=COLORS['text_secondary'],
-                    font_name='DejaVuSans'
+                    color=COLORS['text_secondary']
                 )
                 no_db_label.bind(size=no_db_label.setter('text_size'))
                 self.history_layout.add_widget(no_db_label)
                 
         except Exception as e:
             error_label = Label(
-                text=f'❌ Ошибка загрузки данных:\n{str(e)}',
+                text=f'Ошибка загрузки данных:\n{str(e)}',
                 font_size='16sp',
                 size_hint_y=None,
                 height=120,
                 halign='center',
                 valign='middle',
-                color=COLORS['danger'],
-                font_name='DejaVuSans'
+                color=COLORS['danger']
             )
             error_label.bind(size=error_label.setter('text_size'))
             self.history_layout.add_widget(error_label)
 
     def create_workout_card(self, workout):
-        card = CardLayout(height=180)  # Увеличена высота для предотвращения наложения текста
+        card = CardLayout(height=180)
         
         content = BoxLayout(orientation='vertical', spacing=8)
         
-        # Верхняя часть с датой и временем - ИСПРАВЛЕНО НАЛОЖЕНИЕ
+        # Header with date and time
         header_layout = BoxLayout(orientation='horizontal', size_hint_y=0.4)
         
         date_parts = workout.get('date', 'Неизвестно').split(' ')
         date_text = date_parts[0] if len(date_parts) > 0 else 'Неизвестно'
-        time_text = date_parts[1] if len(date_parts) > 1 else ''
         
         date_label = Label(
-            text=f"📅 {date_text}",
+            text=f"Дата: {date_text}",
             font_size='16sp',
             color=COLORS['primary'],
             bold=True,
             halign='left',
-            font_name='DejaVuSans',
-            text_size=(Window.size[0] * 0.35, None)  # Ограничение ширины текста
+            text_size=(Window.size[0] * 0.35, None)
         )
         date_label.bind(texture_size=date_label.setter('size'))
         
         duration_label = Label(
-            text=f"⏱️ {workout.get('time', '00:00')}",
+            text=f"Время: {workout.get('time', '00:00')}",
             font_size='14sp',
             color=COLORS['secondary'],
             halign='right',
-            font_name='DejaVuSans',
-            text_size=(Window.size[0] * 0.35, None)  # Ограничение ширины текста
+            text_size=(Window.size[0] * 0.35, None)
         )
         duration_label.bind(texture_size=duration_label.setter('size'))
         
         header_layout.add_widget(date_label)
         header_layout.add_widget(duration_label)
         
-        # Метрики - ИСПРАВЛЕНО НАЛОЖЕНИЕ ЦИФР НА ТЕКСТ
+        # Metrics
         metrics = workout.get('metrics', {})
         metrics_layout = GridLayout(cols=3, size_hint_y=0.6, spacing=10, padding=[0, 10, 0, 0])
         
         metrics_data = [
-            ('💪', 'Выносливость', f"{metrics.get('max_endurance', 0):.0f}"),
-            ('⚡', 'Мощность', f"{metrics.get('max_power', 0):.0f}"),
-            ('❤️', 'Пульс', f"{metrics.get('max_heart_rate', 0):.0f}")
+            ('Выносливость', f"{metrics.get('max_endurance', 0):.0f}"),
+            ('Мощность', f"{metrics.get('max_power', 0):.0f}"),
+            ('Пульс', f"{metrics.get('max_heart_rate', 0):.0f}")
         ]
         
-        for icon, name, value in metrics_data:
+        for name, value in metrics_data:
             metric_layout = BoxLayout(orientation='vertical', spacing=2)
-            
-            metric_icon = Label(
-                text=icon,
-                font_size='20sp',
-                font_name='DejaVuSans'
-            )
             
             metric_name = Label(
                 text=name,
                 font_size='11sp',
                 color=COLORS['text_secondary'],
                 size_hint_y=0.4,
-                text_size=(None, None)  # Позволяет тексту занимать нужное место
+                text_size=(None, None)
             )
             metric_name.bind(texture_size=metric_name.setter('size'))
             
@@ -488,11 +467,10 @@ class HistoryScreen(Screen):
                 color=COLORS['text_primary'],
                 bold=True,
                 size_hint_y=0.6,
-                text_size=(None, None)  # Позволяет цифрам занимать нужное место
+                text_size=(None, None)
             )
             metric_value.bind(texture_size=metric_value.setter('size'))
             
-            metric_layout.add_widget(metric_icon)
             metric_layout.add_widget(metric_name)
             metric_layout.add_widget(metric_value)
             metrics_layout.add_widget(metric_layout)
@@ -502,22 +480,18 @@ class HistoryScreen(Screen):
         
         card.add_widget(content)
         
-        # Кнопка просмотра деталей
-        detail_button = Button(
-            size_hint=(1, 1),
-            background_color=(0, 0, 0, 0),
-            background_normal=''
-        )
-        detail_button.bind(on_press=lambda instance, w=workout: self.show_workout_details(w))
-        card.add_widget(detail_button)
+        # Detail view button
+        card.bind(on_touch_down=lambda instance, touch: 
+                 instance.collide_point(*touch.pos) and self.show_workout_details(workout))
         
         return card
 
     def show_workout_details(self, workout):
-        detail_screen = self.manager.get_screen('workout_detail')
-        detail_screen.load_workout_data(workout)
-        self.manager.transition = SlideTransition(direction='left')
-        self.manager.current = 'workout_detail'
+        if hasattr(self.manager, 'get_screen'):
+            detail_screen = self.manager.get_screen('workout_detail')
+            detail_screen.load_workout_data(workout)
+            self.manager.transition = SlideTransition(direction='left')
+            self.manager.current = 'workout_detail'
 
     def clear_history(self, instance):
         try:
@@ -560,7 +534,7 @@ class WorkoutScreen(Screen):
 
         main_layout = BoxLayout(orientation='vertical', padding=25, spacing=25)
         
-        # Заголовок
+        # Title
         title_label = Label(
             text='Тренировка',
             font_size='32sp',
@@ -570,7 +544,7 @@ class WorkoutScreen(Screen):
         )
         main_layout.add_widget(title_label)
         
-        # Таймер
+        # Timer
         timer_card = CardLayout(height=150)
         timer_content = BoxLayout(orientation='vertical', spacing=10)
         
@@ -593,7 +567,7 @@ class WorkoutScreen(Screen):
         timer_card.add_widget(timer_content)
         main_layout.add_widget(timer_card)
         
-        # Данные датчиков
+        # Sensor data
         sensor_card = CardLayout(height=100)
         self.sensor_label = Label(
             text='Данные датчиков: не активны',
@@ -603,7 +577,7 @@ class WorkoutScreen(Screen):
         sensor_card.add_widget(self.sensor_label)
         main_layout.add_widget(sensor_card)
         
-        # Кнопки управления
+        # Control buttons
         control_layout = GridLayout(cols=2, spacing=15, size_hint_y=0.25)
         
         start_button = RoundedButton(
@@ -625,7 +599,7 @@ class WorkoutScreen(Screen):
         control_layout.add_widget(stop_button)
         main_layout.add_widget(control_layout)
         
-        # Кнопка сохранения
+        # Save button
         save_button = RoundedButton(
             text='СОХРАНИТЬ ТРЕНИРОВКУ',
             font_size='20sp',
@@ -636,7 +610,7 @@ class WorkoutScreen(Screen):
         save_button.bind(on_press=self.save_workout)
         main_layout.add_widget(save_button)
         
-        # Кнопка назад
+        # Back button
         back_button = RoundedButton(
             text='НАЗАД',
             font_size='18sp',
@@ -681,8 +655,7 @@ class WorkoutScreen(Screen):
             }
             
             self.sensor_data.append(sensor_reading)
-            # Use proper font for emojis
-            self.sensor_label.text = f'[font=Arial]🏃[/font] Выносливость: {endurance} | [font=Arial]💪[/font] Мощность: {power} | [font=Arial]❤️[/font] Пульс: {heart_rate}'
+            self.sensor_label.text = f'Выносливость: {endurance} | Мощность: {power} | Пульс: {heart_rate}'
 
     def update_timer(self, dt):
         if self.timer_running:
@@ -736,7 +709,7 @@ class WorkoutScreen(Screen):
             
             success = self.save_to_database(workout_entry)
             if success:
-                self.sensor_label.text = f'[font=Arial]✅[/font] Тренировка сохранена! Время: {workout_time}'
+                self.sensor_label.text = f'Тренировка сохранена! Время: {workout_time}'
                 if self.timer_running:
                     if self.timer_event:
                         self.timer_event.cancel()
@@ -750,7 +723,7 @@ class WorkoutScreen(Screen):
                 if 'history' in self.manager.screen_names:
                     self.manager.get_screen('history').update_history()
             else:
-                self.sensor_label.text = '[font=Arial]❌[/font] Ошибка сохранения тренировки'
+                self.sensor_label.text = 'Ошибка сохранения тренировки'
 
     def create_workout_graph(self, sensor_data, save_path):
         if not sensor_data:
@@ -854,7 +827,6 @@ class WorkoutDetailScreen(Screen):
             size_hint=(1, 0.82),
             do_scroll_x=False,
             do_scroll_y=True,
-            scroll_type=['bars', 'content'],
             bar_width=10,
             bar_color=COLORS['primary']
         )
@@ -878,14 +850,14 @@ class WorkoutDetailScreen(Screen):
     def load_workout_data(self, workout):
         self.detail_layout.clear_widgets()
         
-        # Основная информация
+        # Basic info
         info_card = CardLayout(height=140)
         info_layout = GridLayout(cols=2, size_hint_y=1, spacing=10, padding=10)
         
         info_data = [
-            ('[font=Arial]📅[/font] Дата:', workout.get('date', 'Неизвестно')),
-            ('[font=Arial]⏱️[/font] Время тренировки:', workout.get('time', '00:00')),
-            ('[font=Arial]⏰[/font] Длительность (сек):', str(workout.get('duration_seconds', 0)))
+            ('Дата:', workout.get('date', 'Неизвестно')),
+            ('Время тренировки:', workout.get('time', '00:00')),
+            ('Длительность (сек):', str(workout.get('duration_seconds', 0)))
         ]
         
         for label, value in info_data:
@@ -894,8 +866,7 @@ class WorkoutDetailScreen(Screen):
                 font_size='16sp', 
                 color=COLORS['text_primary'],
                 bold=True,
-                halign='left',
-                markup=True
+                halign='left'
             ))
             info_layout.add_widget(Label(
                 text=str(value), 
@@ -907,18 +878,17 @@ class WorkoutDetailScreen(Screen):
         info_card.add_widget(info_layout)
         self.detail_layout.add_widget(info_card)
         
-        # Метрики тренировки
+        # Workout metrics
         metrics = workout.get('metrics', {})
         metrics_card = CardLayout(height=220)
         metrics_content = BoxLayout(orientation='vertical', spacing=10, padding=15)
         
         metrics_title = Label(
-            text='[font=Arial]📊[/font] МЕТРИКИ ТРЕНИРОВКИ',
+            text='МЕТРИКИ ТРЕНИРОВКИ',
             font_size='18sp',
             color=COLORS['primary'],
             bold=True,
-            size_hint_y=0.2,
-            markup=True
+            size_hint_y=0.2
         )
         metrics_content.add_widget(metrics_title)
         
@@ -954,19 +924,18 @@ class WorkoutDetailScreen(Screen):
         metrics_card.add_widget(metrics_content)
         self.detail_layout.add_widget(metrics_card)
         
-        # График тренировки
+        # Workout graph
         graph_path = workout.get('graph_path', '')
         if graph_path and os.path.exists(graph_path):
             graph_card = CardLayout(height=450)
             graph_content = BoxLayout(orientation='vertical', spacing=10, padding=15)
             
             graph_title = Label(
-                text='[font=Arial]📈[/font] ГРАФИК ПОКАЗАТЕЛЕЙ',
+                text='ГРАФИК ПОКАЗАТЕЛЕЙ',
                 font_size='18sp',
                 color=COLORS['primary'],
                 bold=True,
-                size_hint_y=0.1,
-                markup=True
+                size_hint_y=0.1
             )
             graph_content.add_widget(graph_title)
             
@@ -980,11 +949,10 @@ class WorkoutDetailScreen(Screen):
                 graph_content.add_widget(graph_image)
             except Exception as e:
                 error_label = Label(
-                    text=f'[font=Arial]❌[/font] Ошибка загрузки графика: {str(e)}',
+                    text=f'Ошибка загрузки графика: {str(e)}',
                     font_size='14sp',
                     size_hint_y=0.9,
-                    color=COLORS['danger'],
-                    markup=True
+                    color=COLORS['danger']
                 )
                 graph_content.add_widget(error_label)
             
@@ -993,27 +961,25 @@ class WorkoutDetailScreen(Screen):
         else:
             no_graph_card = CardLayout(height=80)
             no_graph_label = Label(
-                text='[font=Arial]📊[/font] График недоступен',
+                text='График недоступен',
                 font_size='16sp',
-                color=COLORS['text_secondary'],
-                markup=True
+                color=COLORS['text_secondary']
             )
             no_graph_card.add_widget(no_graph_label)
             self.detail_layout.add_widget(no_graph_card)
         
-        # Сводка по датчикам
+        # Sensor summary
         sensor_data = workout.get('sensor_data', [])
         if sensor_data:
             summary_card = CardLayout(height=120)
             summary_content = BoxLayout(orientation='vertical', spacing=8, padding=15)
             
             summary_title = Label(
-                text='[font=Arial]📋[/font] СВОДКА ПО ДАТЧИКАМ',
+                text='СВОДКА ПО ДАТЧИКАМ',
                 font_size='16sp',
                 color=COLORS['primary'],
                 bold=True,
-                size_hint_y=0.3,
-                markup=True
+                size_hint_y=0.3
             )
             
             summary_text = (f"• Всего записей: {len(sensor_data)}\n"
@@ -1051,5 +1017,8 @@ class WorkoutApp(App):
         return sm
 
 if __name__ == '__main__':
+    # Create necessary directories
     os.makedirs('workouts', exist_ok=True)
+    
+    # Run the app
     WorkoutApp().run()
