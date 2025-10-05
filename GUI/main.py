@@ -54,8 +54,11 @@ class BLESensorManager:
         self.max_value = 0
         self.is_calibrated = False
         self.is_calibrating = False
-        self.calibration_data = []
+        self.calibration_phase = None  # 'relax' или 'tension'
+        self.calibration_data_relax = []
+        self.calibration_data_tension = []
         self.calibration_callback = None
+        self.calibration_phase_callback = None
         
     def start_ble_loop(self):
         """НОВЫЙ МЕТОД: Start BLE in a separate thread"""
@@ -154,9 +157,12 @@ class BLESensorManager:
                 if value != 0:  # Accept only non-zero values
                     self.current_value = value
                     
-                    # Если идет калибровка, собираем данные
+                    # Если идет калибровка, собираем данные в соответствующий массив
                     if self.is_calibrating:
-                        self.calibration_data.append(value)
+                        if self.calibration_phase == 'relax':
+                            self.calibration_data_relax.append(value)
+                        elif self.calibration_phase == 'tension':
+                            self.calibration_data_tension.append(value)
                         
             except ValueError:
                 print(f"❌ Неверный формат данных: {sensor_value}")
@@ -181,32 +187,57 @@ class BLESensorManager:
         print("⏸️ Остановлено чтение данных с датчика")
     
     def start_calibration(self):
-        """Начать процесс калибровки"""
+        """Начать процесс калибровки на 30 секунд"""
         if self.is_connected and not self.is_calibrating:
             self.is_calibrating = True
-            self.calibration_data = []
+            self.calibration_data_relax = []
+            self.calibration_data_tension = []
             self.is_reading = True  # Включаем чтение данных для калибровки
-            print("🔧 Начало процесса калибровки...")
+            print("🔧 Начало процесса калибровки на 30 секунд...")
             
             # Запускаем сбор данных для калибровки
             async def calibration_process():
-                # Собираем данные в течение 10 секунд
-                await asyncio.sleep(10)
+                # Фаза расслабления - 15 секунд
+                self.calibration_phase = 'relax'
+                print("🎯 Фаза расслабления: 15 секунд")
+                if self.calibration_phase_callback:
+                    self.calibration_phase_callback('relax', 15)
+                
+                # Собираем данные в течение 15 секунд для расслабления
+                relax_start = asyncio.get_event_loop().time()
+                while (asyncio.get_event_loop().time() - relax_start) < 15:
+                    await asyncio.sleep(0.1)
+                
+                # Фаза напряжения - 15 секунд
+                self.calibration_phase = 'tension'
+                print("💪 Фаза напряжения: 15 секунд")
+                if self.calibration_phase_callback:
+                    self.calibration_phase_callback('tension', 15)
+                
+                # Собираем данные в течение 15 секунд для напряжения
+                tension_start = asyncio.get_event_loop().time()
+                while (asyncio.get_event_loop().time() - tension_start) < 15:
+                    await asyncio.sleep(0.1)
                 
                 # Останавливаем сбор данных
                 self.is_reading = False
                 self.is_calibrating = False
+                self.calibration_phase = None
                 
                 # Анализируем собранные данные
-                if self.calibration_data:
-                    self.baseline = min(self.calibration_data)
-                    self.max_value = max(self.calibration_data)
+                if self.calibration_data_relax and self.calibration_data_tension:
+                    # Для расслабления берем минимальное значение
+                    self.baseline = min(self.calibration_data_relax)
+                    # Для напряжения берем максимальное значение
+                    self.max_value = max(self.calibration_data_tension)
                     self.is_calibrated = True
                     
                     print(f"✅ Калибровка завершена!")
                     print(f"   Базовый уровень (расслабление): {self.baseline:.2f}")
                     print(f"   Максимальное напряжение: {self.max_value:.2f}")
                     print(f"   Диапазон: {self.max_value - self.baseline:.2f}")
+                    print(f"   Данных в фазе расслабления: {len(self.calibration_data_relax)}")
+                    print(f"   Данных в фазе напряжения: {len(self.calibration_data_tension)}")
                     
                     # Вызываем callback для обновления интерфейса
                     if self.calibration_callback:
@@ -229,6 +260,10 @@ class BLESensorManager:
     def set_calibration_callback(self, callback):
         """Устанавливает callback для уведомления о завершении калибровки"""
         self.calibration_callback = callback
+    
+    def set_calibration_phase_callback(self, callback):
+        """Устанавливает callback для уведомления о смене фазы калибровки"""
+        self.calibration_phase_callback = callback
     
     def disconnect_sensor(self):
         """Disconnect from sensor (only when app closes)"""
@@ -763,6 +798,8 @@ class WorkoutScreen(Screen):
         self.sensor_update_event = None
         self.calibration_progress = 0
         self.calibration_event = None
+        self.calibration_phase_time_left = 0
+        self.calibration_phase_event = None
 
         main_layout = BoxLayout(orientation='vertical', padding=25, spacing=25)
         
@@ -843,7 +880,7 @@ class WorkoutScreen(Screen):
         
         # Calibration button
         self.calibrate_button = RoundedButton(
-            text='КАЛИБРОВКА',
+            text='КАЛИБРОВКА (30 сек)',
             font_size='18sp',
             size_hint_y=0.1,
             color=COLORS['white']
@@ -878,6 +915,7 @@ class WorkoutScreen(Screen):
         
         # Устанавливаем callback для калибровки
         sensor_manager.set_calibration_callback(self.on_calibration_complete)
+        sensor_manager.set_calibration_phase_callback(self.on_calibration_phase_change)
 
     def on_enter(self):
         """При входе на экран тренировки - плата остается в ожидании"""
@@ -895,6 +933,10 @@ class WorkoutScreen(Screen):
         if self.calibration_event:
             self.calibration_event.cancel()
             self.calibration_event = None
+        
+        if self.calibration_phase_event:
+            self.calibration_phase_event.cancel()
+            self.calibration_phase_event = None
 
     def update_sensor_display(self, dt):
         """Update sensor data display"""
@@ -904,8 +946,12 @@ class WorkoutScreen(Screen):
                 
                 if sensor_manager.is_calibrating:
                     # Показываем прогресс калибровки
-                    status = "🔧 Идет калибровка..."
-                    value_text = f"Прогресс: {self.calibration_progress}%"
+                    if sensor_manager.calibration_phase == 'relax':
+                        status = "🔧 Калибровка: РАССЛАБЬТЕ мышцу"
+                    else:
+                        status = "🔧 Калибровка: НАПРЯГИТЕ мышцу"
+                    
+                    value_text = f"Прогресс: {self.calibration_progress}% | Осталось: {self.calibration_phase_time_left}с"
                 else:
                     status = "✅ Идет замер"
                     if sensor_manager.is_calibrated:
@@ -933,11 +979,11 @@ class WorkoutScreen(Screen):
             self.calibration_label.color = COLORS['danger']
 
     def start_calibration(self, instance):
-        """Начать процесс калибровки"""
+        """Начать процесс калибровки на 30 секунд"""
         if sensor_manager.is_connected and not sensor_manager.is_calibrating:
             self.calibration_progress = 0
             self.calibrate_button.disabled = True
-            self.sensor_label.text = "🔧 Начата калибровка...\nРасслабьте мышцу, затем напрягите"
+            self.sensor_label.text = "🔧 Начата калибровка на 30 секунд..."
             
             # Запускаем прогресс калибровки
             self.calibration_event = Clock.schedule_interval(self.update_calibration_progress, 0.5)
@@ -948,16 +994,44 @@ class WorkoutScreen(Screen):
     def update_calibration_progress(self, dt):
         """Обновляет прогресс калибровки"""
         if sensor_manager.is_calibrating:
-            self.calibration_progress = min(100, self.calibration_progress + 5)
+            self.calibration_progress = min(100, self.calibration_progress + 100/60)  # 30 секунд * 2 обновления в секунду
         else:
             if self.calibration_event:
                 self.calibration_event.cancel()
                 self.calibration_event = None
 
+    def on_calibration_phase_change(self, phase, duration):
+        """Callback при смене фазы калибровки"""
+        self.calibration_phase_time_left = duration
+        
+        # Запускаем отсчет времени для текущей фазы
+        if self.calibration_phase_event:
+            self.calibration_phase_event.cancel()
+        
+        self.calibration_phase_event = Clock.schedule_interval(self.update_phase_timer, 1)
+        
+        if phase == 'relax':
+            print("🔧 Переход в фазу расслабления")
+        else:
+            print("🔧 Переход в фазу напряжения")
+
+    def update_phase_timer(self, dt):
+        """Обновляет таймер фазы калибровки"""
+        if sensor_manager.is_calibrating:
+            self.calibration_phase_time_left -= 1
+            if self.calibration_phase_time_left <= 0:
+                self.calibration_phase_time_left = 0
+                if self.calibration_phase_event:
+                    self.calibration_phase_event.cancel()
+
     def on_calibration_complete(self, baseline, max_value):
         """Callback при завершении калибровки"""
         self.calibrate_button.disabled = False
         self.update_calibration_display()
+        
+        if self.calibration_phase_event:
+            self.calibration_phase_event.cancel()
+        
         self.sensor_label.text = f"✅ Калибровка завершена!\nБазовый: {baseline:.1f} | Макс: {max_value:.1f}"
         
         # Сохраняем калибровочные данные

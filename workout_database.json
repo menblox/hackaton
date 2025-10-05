@@ -1,863 +1,79 @@
 {
   "workouts": [
     {
-      "id": "20251005_110750",
-      "time": "00:36",
-      "date": "2025-10-05 11:07:50",
-      "duration_seconds": 36,
+      "id": "20251005_121641",
+      "time": "00:18",
+      "date": "2025-10-05 12:16:41",
+      "duration_seconds": 18,
       "sensor_data": [
         {
           "timestamp": 1,
-          "tension": 281.0
+          "tension": 381.0,
+          "calibrated_tension": 98.23529411764706
         },
         {
           "timestamp": 2,
-          "tension": 280.25
+          "tension": 421.0,
+          "calibrated_tension": 100
         },
         {
           "timestamp": 3,
-          "tension": 282.4
+          "tension": 422.0,
+          "calibrated_tension": 100
         },
         {
           "timestamp": 4,
-          "tension": 281.4
+          "tension": 452.0,
+          "calibrated_tension": 100
         },
         {
           "timestamp": 5,
-          "tension": 278.2
+          "tension": 384.0,
+          "calibrated_tension": 100
         },
         {
           "timestamp": 6,
-          "tension": 280.6
+          "tension": 437.0,
+          "calibrated_tension": 100
         },
         {
           "timestamp": 7,
-          "tension": 287.0
+          "tension": 461.0,
+          "calibrated_tension": 100
         },
         {
           "timestamp": 8,
-          "tension": 123.15714285714287
+          "tension": 393.0,
+          "calibrated_tension": 100
         },
         {
           "timestamp": 9,
-          "tension": 9.928571428571445
-        },
-        {
-          "timestamp": 10,
-          "tension": 5.728571428571445
-        },
-        {
-          "timestamp": 11,
-          "tension": 3.528571428571445
-        },
-        {
-          "timestamp": 12,
-          "tension": 11.128571428571444
-        },
-        {
-          "timestamp": 13,
-          "tension": 20.328571428571443
-        },
-        {
-          "timestamp": 14,
-          "tension": 23.928571428571445
-        },
-        {
-          "timestamp": 15,
-          "tension": 20.928571428571445
-        },
-        {
-          "timestamp": 16,
-          "tension": 22.128571428571444
-        },
-        {
-          "timestamp": 17,
-          "tension": 26.928571428571445
-        },
-        {
-          "timestamp": 18,
-          "tension": 33.72857142857144
-        },
-        {
-          "timestamp": 19,
-          "tension": 37.72857142857144
-        },
-        {
-          "timestamp": 20,
-          "tension": 41.12857142857145
-        },
-        {
-          "timestamp": 21,
-          "tension": 43.32857142857144
-        },
-        {
-          "timestamp": 22,
-          "tension": 43.928571428571445
-        },
-        {
-          "timestamp": 23,
-          "tension": 45.72857142857144
-        },
-        {
-          "timestamp": 24,
-          "tension": 50.12857142857145
-        },
-        {
-          "timestamp": 25,
-          "tension": 51.32857142857144
-        },
-        {
-          "timestamp": 26,
-          "tension": 91.32857142857145
-        },
-        {
-          "timestamp": 27,
-          "tension": 102.92857142857144
-        },
-        {
-          "timestamp": 28,
-          "tension": 103.92857142857144
-        },
-        {
-          "timestamp": 29,
-          "tension": 84.12857142857145
-        },
-        {
-          "timestamp": 30,
-          "tension": 78.52857142857144
-        },
-        {
-          "timestamp": 31,
-          "tension": 74.92857142857144
-        },
-        {
-          "timestamp": 32,
-          "tension": 85.52857142857144
-        },
-        {
-          "timestamp": 33,
-          "tension": 115.92857142857144
-        },
-        {
-          "timestamp": 34,
-          "tension": 80.95714285714287
-        },
-        {
-          "timestamp": 35,
-          "tension": 84.95714285714287
-        },
-        {
-          "timestamp": 36,
-          "tension": 54.37142857142858
-        }
-      ],
-      "workout_folder": "workouts/workout_20251005_110750",
-      "graph_path": "workouts/workout_20251005_110750/graph.png",
-      "metrics": {
-        "max_tension": 287.0,
-        "avg_tension": 98.42,
-        "min_tension": 3.528571428571445
-      }
-    },
-    {
-      "id": "20251005_110945",
-      "time": "01:25",
-      "date": "2025-10-05 11:09:45",
-      "duration_seconds": 85,
-      "sensor_data": [
-        {
-          "timestamp": 1,
-          "tension": 80.57142857142858
-        },
-        {
-          "timestamp": 2,
-          "tension": 196.14285714285717
-        },
-        {
-          "timestamp": 3,
-          "tension": 281.72857142857146
-        },
-        {
-          "timestamp": 4,
-          "tension": 318.92857142857144
-        },
-        {
-          "timestamp": 5,
-          "tension": 306.1285714285715
-        },
-        {
-          "timestamp": 6,
-          "tension": 309.1285714285715
-        },
-        {
-          "timestamp": 7,
-          "tension": 259.52857142857147
-        },
-        {
-          "timestamp": 8,
-          "tension": 235.52857142857147
-        },
-        {
-          "timestamp": 9,
-          "tension": 215.92857142857147
-        },
-        {
-          "timestamp": 10,
-          "tension": 175.72857142857146
-        },
-        {
-          "timestamp": 11,
-          "tension": 159.72857142857146
-        },
-        {
-          "timestamp": 12,
-          "tension": 149.92857142857144
-        },
-        {
-          "timestamp": 13,
-          "tension": 131.52857142857144
-        },
-        {
-          "timestamp": 14,
-          "tension": 87.12857142857145
-        },
-        {
-          "timestamp": 15,
-          "tension": 61.32857142857144
-        },
-        {
-          "timestamp": 16,
-          "tension": 49.12857142857145
-        },
-        {
-          "timestamp": 17,
-          "tension": 35.12857142857145
-        },
-        {
-          "timestamp": 18,
-          "tension": 23.928571428571445
-        },
-        {
-          "timestamp": 19,
-          "tension": 11.942857142857155
-        },
-        {
-          "timestamp": 20,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 21,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 22,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 23,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 24,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 25,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 26,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 27,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 28,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 29,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 30,
-          "tension": 1.5714285714285778
-        },
-        {
-          "timestamp": 31,
-          "tension": 11.6
-        },
-        {
-          "timestamp": 32,
-          "tension": 40.4
-        },
-        {
-          "timestamp": 33,
-          "tension": 80.8
-        },
-        {
-          "timestamp": 34,
-          "tension": 97.2
-        },
-        {
-          "timestamp": 35,
-          "tension": 100.4
-        },
-        {
-          "timestamp": 36,
-          "tension": 103.8
-        },
-        {
-          "timestamp": 37,
-          "tension": 125.2
-        },
-        {
-          "timestamp": 38,
-          "tension": 141.0
-        },
-        {
-          "timestamp": 39,
-          "tension": 140.0
-        },
-        {
-          "timestamp": 40,
-          "tension": 142.0
-        },
-        {
-          "timestamp": 41,
-          "tension": 138.2
-        },
-        {
-          "timestamp": 42,
-          "tension": 160.6
-        },
-        {
-          "timestamp": 43,
-          "tension": 192.0
-        },
-        {
-          "timestamp": 44,
-          "tension": 230.6
-        },
-        {
-          "timestamp": 45,
-          "tension": 246.0
-        },
-        {
-          "timestamp": 46,
-          "tension": 209.8
-        },
-        {
-          "timestamp": 47,
-          "tension": 205.8
-        },
-        {
-          "timestamp": 48,
-          "tension": 246.0
-        },
-        {
-          "timestamp": 49,
-          "tension": 316.8
-        },
-        {
-          "timestamp": 50,
-          "tension": 317.6
-        },
-        {
-          "timestamp": 51,
-          "tension": 330.6
-        },
-        {
-          "timestamp": 52,
-          "tension": 294.8
-        },
-        {
-          "timestamp": 53,
-          "tension": 244.6
-        },
-        {
-          "timestamp": 54,
-          "tension": 197.8
-        },
-        {
-          "timestamp": 55,
-          "tension": 196.0
-        },
-        {
-          "timestamp": 56,
-          "tension": 209.8
-        },
-        {
-          "timestamp": 57,
-          "tension": 208.8
-        },
-        {
-          "timestamp": 58,
-          "tension": 180.2
-        },
-        {
-          "timestamp": 59,
-          "tension": 162.6
-        },
-        {
-          "timestamp": 60,
-          "tension": 171.6
-        },
-        {
-          "timestamp": 61,
-          "tension": 208.0
-        },
-        {
-          "timestamp": 62,
-          "tension": 193.6
-        },
-        {
-          "timestamp": 63,
-          "tension": 153.6
-        },
-        {
-          "timestamp": 64,
-          "tension": 146.4
-        },
-        {
-          "timestamp": 65,
-          "tension": 213.2
-        },
-        {
-          "timestamp": 66,
-          "tension": 224.8
-        },
-        {
-          "timestamp": 67,
-          "tension": 216.4
-        },
-        {
-          "timestamp": 68,
-          "tension": 225.8
-        },
-        {
-          "timestamp": 69,
-          "tension": 254.2
-        },
-        {
-          "timestamp": 70,
-          "tension": 193.6
-        },
-        {
-          "timestamp": 71,
-          "tension": 148.0
-        },
-        {
-          "timestamp": 72,
-          "tension": 125.8
-        },
-        {
-          "timestamp": 73,
-          "tension": 131.2
-        },
-        {
-          "timestamp": 74,
-          "tension": 151.6
-        },
-        {
-          "timestamp": 75,
-          "tension": 159.2
-        },
-        {
-          "timestamp": 76,
-          "tension": 165.6
-        },
-        {
-          "timestamp": 77,
-          "tension": 175.4
-        },
-        {
-          "timestamp": 78,
-          "tension": 168.4
-        },
-        {
-          "timestamp": 79,
-          "tension": 148.4
-        },
-        {
-          "timestamp": 80,
-          "tension": 135.4
-        },
-        {
-          "timestamp": 81,
-          "tension": 130.4
-        },
-        {
-          "timestamp": 82,
-          "tension": 149.4
-        },
-        {
-          "timestamp": 83,
-          "tension": 195.4
-        },
-        {
-          "timestamp": 84,
-          "tension": 196.2
-        },
-        {
-          "timestamp": 85,
-          "tension": 193.4
-        }
-      ],
-      "workout_folder": "workouts/workout_20251005_110945",
-      "graph_path": "workouts/workout_20251005_110945/graph.png",
-      "metrics": {
-        "max_tension": 330.6,
-        "avg_tension": 152.38,
-        "min_tension": 1.5714285714285778
-      }
-    },
-    {
-      "id": "20251005_112618",
-      "time": "00:50",
-      "date": "2025-10-05 11:26:18",
-      "duration_seconds": 50,
-      "sensor_data": [
-        {
-          "timestamp": 1,
-          "tension": 280.0,
-          "calibrated_tension": 85.26315789473684
-        },
-        {
-          "timestamp": 2,
-          "tension": 280.0,
-          "calibrated_tension": 85.26315789473684
-        },
-        {
-          "timestamp": 3,
-          "tension": 232.0,
-          "calibrated_tension": 34.73684210526316
-        },
-        {
-          "timestamp": 4,
-          "tension": 232.0,
-          "calibrated_tension": 34.73684210526316
-        },
-        {
-          "timestamp": 5,
-          "tension": 232.0,
-          "calibrated_tension": 34.73684210526316
-        },
-        {
-          "timestamp": 6,
-          "tension": 236.0,
-          "calibrated_tension": 38.94736842105263
-        },
-        {
-          "timestamp": 7,
-          "tension": 236.0,
-          "calibrated_tension": 38.94736842105263
-        },
-        {
-          "timestamp": 8,
-          "tension": 246.0,
-          "calibrated_tension": 49.473684210526315
-        },
-        {
-          "timestamp": 9,
-          "tension": 246.0,
-          "calibrated_tension": 49.473684210526315
-        },
-        {
-          "timestamp": 10,
-          "tension": 237.0,
-          "calibrated_tension": 40.0
-        },
-        {
-          "timestamp": 11,
-          "tension": 237.0,
-          "calibrated_tension": 40.0
-        },
-        {
-          "timestamp": 12,
-          "tension": 244.0,
-          "calibrated_tension": 47.368421052631575
-        },
-        {
-          "timestamp": 13,
-          "tension": 244.0,
-          "calibrated_tension": 47.368421052631575
-        },
-        {
-          "timestamp": 14,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 15,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 16,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 17,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 18,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 19,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 20,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 21,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 22,
-          "tension": 191.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 23,
-          "tension": 191.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 24,
-          "tension": 186.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 25,
-          "tension": 186.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 26,
-          "tension": 186.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 27,
-          "tension": 270.0,
-          "calibrated_tension": 74.73684210526315
-        },
-        {
-          "timestamp": 28,
-          "tension": 270.0,
-          "calibrated_tension": 74.73684210526315
-        },
-        {
-          "timestamp": 29,
-          "tension": 195.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 30,
-          "tension": 195.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 31,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 32,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 33,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 34,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 35,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 36,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 37,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 38,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 39,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 40,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 41,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 42,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 43,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 44,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 45,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 46,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 47,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 48,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 49,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 50,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        }
-      ],
-      "workout_folder": "workouts/workout_20251005_112618",
-      "graph_path": "workouts/workout_20251005_112618/graph.png",
-      "calibration_used": true,
-      "calibration_baseline": 199.0,
-      "calibration_max": 294.0,
-      "metrics": {
-        "max_tension": 280.0,
-        "avg_tension": 211.08,
-        "min_tension": 186.0,
-        "max_calibrated": 85.26,
-        "avg_calibrated": 15.52
-      }
-    },
-    {
-      "id": "20251005_112646",
-      "time": "00:22",
-      "date": "2025-10-05 11:26:46",
-      "duration_seconds": 22,
-      "sensor_data": [
-        {
-          "timestamp": 1,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 2,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 3,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 4,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 5,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 6,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 7,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 8,
-          "tension": 196.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 9,
-          "tension": 383.0,
+          "tension": 428.0,
           "calibrated_tension": 100
         },
         {
           "timestamp": 10,
-          "tension": 424.0,
+          "tension": 659.0,
           "calibrated_tension": 100
         },
         {
           "timestamp": 11,
-          "tension": 477.0,
+          "tension": 659.0,
           "calibrated_tension": 100
         },
         {
           "timestamp": 12,
-          "tension": 479.0,
+          "tension": 659.0,
           "calibrated_tension": 100
         },
         {
           "timestamp": 13,
-          "tension": 490.0,
+          "tension": 659.0,
           "calibrated_tension": 100
         },
         {
           "timestamp": 14,
-          "tension": 592.0,
+          "tension": 659.0,
           "calibrated_tension": 100
         },
         {
@@ -867,508 +83,413 @@
         },
         {
           "timestamp": 16,
-          "tension": 656.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 17,
-          "tension": 657.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 18,
-          "tension": 657.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 19,
-          "tension": 657.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 20,
-          "tension": 651.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 21,
-          "tension": 658.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 22,
-          "tension": 657.0,
-          "calibrated_tension": 100
-        }
-      ],
-      "workout_folder": "workouts/workout_20251005_112646",
-      "graph_path": "workouts/workout_20251005_112646/graph.png",
-      "calibration_used": true,
-      "calibration_baseline": 199.0,
-      "calibration_max": 294.0,
-      "metrics": {
-        "max_tension": 658.0,
-        "avg_tension": 439.27,
-        "min_tension": 196.0,
-        "max_calibrated": 100,
-        "avg_calibrated": 63.64
-      }
-    },
-    {
-      "id": "20251005_112829",
-      "time": "01:26",
-      "date": "2025-10-05 11:28:29",
-      "duration_seconds": 86,
-      "sensor_data": [
-        {
-          "timestamp": 1,
-          "tension": 655.0,
-          "calibrated_tension": 99.15254237288136
-        },
-        {
-          "timestamp": 2,
-          "tension": 655.0,
-          "calibrated_tension": 99.15254237288136
-        },
-        {
-          "timestamp": 3,
-          "tension": 655.0,
-          "calibrated_tension": 99.15254237288136
-        },
-        {
-          "timestamp": 4,
-          "tension": 655.0,
-          "calibrated_tension": 99.15254237288136
-        },
-        {
-          "timestamp": 5,
-          "tension": 464.0,
-          "calibrated_tension": 45.19774011299435
-        },
-        {
-          "timestamp": 6,
-          "tension": 582.0,
-          "calibrated_tension": 78.53107344632768
-        },
-        {
-          "timestamp": 7,
-          "tension": 582.0,
-          "calibrated_tension": 78.53107344632768
-        },
-        {
-          "timestamp": 8,
-          "tension": 657.0,
-          "calibrated_tension": 99.71751412429379
-        },
-        {
-          "timestamp": 9,
-          "tension": 659.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 10,
-          "tension": 591.0,
-          "calibrated_tension": 81.07344632768361
-        },
-        {
-          "timestamp": 11,
-          "tension": 657.0,
-          "calibrated_tension": 99.71751412429379
-        },
-        {
-          "timestamp": 12,
-          "tension": 653.0,
-          "calibrated_tension": 98.58757062146893
-        },
-        {
-          "timestamp": 13,
-          "tension": 657.0,
-          "calibrated_tension": 99.71751412429379
-        },
-        {
-          "timestamp": 14,
-          "tension": 655.0,
-          "calibrated_tension": 99.15254237288136
-        },
-        {
-          "timestamp": 15,
-          "tension": 662.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 16,
           "tension": 659.0,
           "calibrated_tension": 100
         },
         {
           "timestamp": 17,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 18,
-          "tension": 659.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 19,
-          "tension": 659.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 20,
-          "tension": 545.0,
-          "calibrated_tension": 68.07909604519774
-        },
-        {
-          "timestamp": 21,
-          "tension": 609.0,
-          "calibrated_tension": 86.15819209039547
-        },
-        {
-          "timestamp": 22,
-          "tension": 549.0,
-          "calibrated_tension": 69.2090395480226
-        },
-        {
-          "timestamp": 23,
-          "tension": 499.0,
-          "calibrated_tension": 55.08474576271186
-        },
-        {
-          "timestamp": 24,
-          "tension": 530.0,
-          "calibrated_tension": 63.84180790960452
-        },
-        {
-          "timestamp": 25,
-          "tension": 440.0,
-          "calibrated_tension": 38.4180790960452
-        },
-        {
-          "timestamp": 26,
-          "tension": 442.0,
-          "calibrated_tension": 38.983050847457626
-        },
-        {
-          "timestamp": 27,
-          "tension": 400.0,
-          "calibrated_tension": 27.11864406779661
-        },
-        {
-          "timestamp": 28,
-          "tension": 325.0,
-          "calibrated_tension": 5.932203389830509
-        },
-        {
-          "timestamp": 29,
-          "tension": 241.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 30,
-          "tension": 240.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 31,
-          "tension": 195.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 32,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 33,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 34,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 35,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 36,
-          "tension": 199.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 37,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 38,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 39,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 40,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 41,
-          "tension": 659.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 42,
-          "tension": 658.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 43,
-          "tension": 658.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 44,
-          "tension": 658.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 45,
-          "tension": 659.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 46,
-          "tension": 659.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 47,
-          "tension": 590.0,
-          "calibrated_tension": 80.7909604519774
-        },
-        {
-          "timestamp": 48,
-          "tension": 590.0,
-          "calibrated_tension": 80.7909604519774
-        },
-        {
-          "timestamp": 49,
-          "tension": 516.0,
-          "calibrated_tension": 59.887005649717516
-        },
-        {
-          "timestamp": 50,
-          "tension": 560.0,
-          "calibrated_tension": 72.31638418079096
-        },
-        {
-          "timestamp": 51,
-          "tension": 391.0,
-          "calibrated_tension": 24.576271186440678
-        },
-        {
-          "timestamp": 52,
-          "tension": 339.0,
-          "calibrated_tension": 9.887005649717514
-        },
-        {
-          "timestamp": 53,
-          "tension": 339.0,
-          "calibrated_tension": 9.887005649717514
-        },
-        {
-          "timestamp": 54,
-          "tension": 282.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 55,
-          "tension": 206.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 56,
-          "tension": 213.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 57,
-          "tension": 213.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 58,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 59,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 60,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 61,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 62,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 63,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 64,
-          "tension": 194.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 65,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 66,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 67,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 68,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 69,
-          "tension": 660.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 70,
-          "tension": 659.0,
-          "calibrated_tension": 100
-        },
-        {
-          "timestamp": 71,
-          "tension": 650.0,
-          "calibrated_tension": 97.74011299435028
-        },
-        {
-          "timestamp": 72,
-          "tension": 643.0,
-          "calibrated_tension": 95.76271186440678
-        },
-        {
-          "timestamp": 73,
-          "tension": 643.0,
-          "calibrated_tension": 95.76271186440678
-        },
-        {
-          "timestamp": 74,
-          "tension": 654.0,
-          "calibrated_tension": 98.87005649717514
-        },
-        {
-          "timestamp": 75,
-          "tension": 636.0,
-          "calibrated_tension": 93.78531073446328
-        },
-        {
-          "timestamp": 76,
-          "tension": 593.0,
-          "calibrated_tension": 81.63841807909604
-        },
-        {
-          "timestamp": 77,
-          "tension": 535.0,
-          "calibrated_tension": 65.2542372881356
-        },
-        {
-          "timestamp": 78,
-          "tension": 486.0,
-          "calibrated_tension": 51.41242937853108
-        },
-        {
-          "timestamp": 79,
-          "tension": 413.0,
-          "calibrated_tension": 30.7909604519774
-        },
-        {
-          "timestamp": 80,
-          "tension": 434.0,
-          "calibrated_tension": 36.72316384180791
-        },
-        {
-          "timestamp": 81,
           "tension": 416.0,
-          "calibrated_tension": 31.63841807909605
+          "calibrated_tension": 100
         },
         {
-          "timestamp": 82,
-          "tension": 266.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 83,
-          "tension": 224.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 84,
-          "tension": 188.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 85,
-          "tension": 190.0,
-          "calibrated_tension": 0
-        },
-        {
-          "timestamp": 86,
-          "tension": 187.0,
-          "calibrated_tension": 0
+          "timestamp": 18,
+          "tension": 396.0,
+          "calibrated_tension": 100
         }
       ],
-      "workout_folder": "workouts/workout_20251005_112829",
-      "graph_path": "workouts/workout_20251005_112829/graph.png",
+      "workout_folder": "workouts/workout_20251005_121641",
+      "graph_path": "workouts/workout_20251005_121641/graph.png",
       "calibration_used": true,
-      "calibration_baseline": 304.0,
-      "calibration_max": 658.0,
+      "calibration_baseline": 214.0,
+      "calibration_max": 384.0,
       "metrics": {
-        "max_tension": 662.0,
-        "avg_tension": 481.29,
-        "min_tension": 187.0,
+        "max_tension": 659.0,
+        "avg_tension": 511.28,
+        "min_tension": 381.0,
         "max_calibrated": 100,
-        "avg_calibrated": 57.53
+        "avg_calibrated": 99.9
+      }
+    },
+    {
+      "id": "20251005_122048",
+      "time": "01:11",
+      "date": "2025-10-05 12:20:48",
+      "duration_seconds": 71,
+      "sensor_data": [
+        {
+          "timestamp": 1,
+          "tension": 658.0,
+          "calibrated_tension": 99.22680412371135
+        },
+        {
+          "timestamp": 2,
+          "tension": 657.0,
+          "calibrated_tension": 98.96907216494846
+        },
+        {
+          "timestamp": 3,
+          "tension": 649.0,
+          "calibrated_tension": 96.90721649484536
+        },
+        {
+          "timestamp": 4,
+          "tension": 655.0,
+          "calibrated_tension": 98.4536082474227
+        },
+        {
+          "timestamp": 5,
+          "tension": 647.0,
+          "calibrated_tension": 96.3917525773196
+        },
+        {
+          "timestamp": 6,
+          "tension": 618.0,
+          "calibrated_tension": 88.91752577319588
+        },
+        {
+          "timestamp": 7,
+          "tension": 595.0,
+          "calibrated_tension": 82.9896907216495
+        },
+        {
+          "timestamp": 8,
+          "tension": 558.0,
+          "calibrated_tension": 73.4536082474227
+        },
+        {
+          "timestamp": 9,
+          "tension": 511.0,
+          "calibrated_tension": 61.34020618556701
+        },
+        {
+          "timestamp": 10,
+          "tension": 470.0,
+          "calibrated_tension": 50.77319587628865
+        },
+        {
+          "timestamp": 11,
+          "tension": 417.0,
+          "calibrated_tension": 37.11340206185567
+        },
+        {
+          "timestamp": 12,
+          "tension": 348.0,
+          "calibrated_tension": 19.329896907216497
+        },
+        {
+          "timestamp": 13,
+          "tension": 386.0,
+          "calibrated_tension": 29.12371134020619
+        },
+        {
+          "timestamp": 14,
+          "tension": 349.0,
+          "calibrated_tension": 19.587628865979383
+        },
+        {
+          "timestamp": 15,
+          "tension": 250.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 16,
+          "tension": 232.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 17,
+          "tension": 217.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 18,
+          "tension": 217.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 19,
+          "tension": 260.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 20,
+          "tension": 274.0,
+          "calibrated_tension": 0.25773195876288657
+        },
+        {
+          "timestamp": 21,
+          "tension": 209.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 22,
+          "tension": 209.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 23,
+          "tension": 209.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 24,
+          "tension": 209.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 25,
+          "tension": 209.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 26,
+          "tension": 209.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 27,
+          "tension": 209.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 28,
+          "tension": 461.0,
+          "calibrated_tension": 48.45360824742268
+        },
+        {
+          "timestamp": 29,
+          "tension": 524.0,
+          "calibrated_tension": 64.69072164948454
+        },
+        {
+          "timestamp": 30,
+          "tension": 546.0,
+          "calibrated_tension": 70.36082474226805
+        },
+        {
+          "timestamp": 31,
+          "tension": 602.0,
+          "calibrated_tension": 84.79381443298969
+        },
+        {
+          "timestamp": 32,
+          "tension": 618.0,
+          "calibrated_tension": 88.91752577319588
+        },
+        {
+          "timestamp": 33,
+          "tension": 481.0,
+          "calibrated_tension": 53.608247422680414
+        },
+        {
+          "timestamp": 34,
+          "tension": 659.0,
+          "calibrated_tension": 99.48453608247422
+        },
+        {
+          "timestamp": 35,
+          "tension": 647.0,
+          "calibrated_tension": 96.3917525773196
+        },
+        {
+          "timestamp": 36,
+          "tension": 649.0,
+          "calibrated_tension": 96.90721649484536
+        },
+        {
+          "timestamp": 37,
+          "tension": 615.0,
+          "calibrated_tension": 88.14432989690721
+        },
+        {
+          "timestamp": 38,
+          "tension": 600.0,
+          "calibrated_tension": 84.27835051546391
+        },
+        {
+          "timestamp": 39,
+          "tension": 567.0,
+          "calibrated_tension": 75.77319587628865
+        },
+        {
+          "timestamp": 40,
+          "tension": 527.0,
+          "calibrated_tension": 65.4639175257732
+        },
+        {
+          "timestamp": 41,
+          "tension": 498.0,
+          "calibrated_tension": 57.98969072164949
+        },
+        {
+          "timestamp": 42,
+          "tension": 415.0,
+          "calibrated_tension": 36.597938144329895
+        },
+        {
+          "timestamp": 43,
+          "tension": 406.0,
+          "calibrated_tension": 34.27835051546392
+        },
+        {
+          "timestamp": 44,
+          "tension": 371.0,
+          "calibrated_tension": 25.257731958762886
+        },
+        {
+          "timestamp": 45,
+          "tension": 437.0,
+          "calibrated_tension": 42.2680412371134
+        },
+        {
+          "timestamp": 46,
+          "tension": 336.0,
+          "calibrated_tension": 16.237113402061855
+        },
+        {
+          "timestamp": 47,
+          "tension": 291.0,
+          "calibrated_tension": 4.639175257731959
+        },
+        {
+          "timestamp": 48,
+          "tension": 269.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 49,
+          "tension": 245.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 50,
+          "tension": 233.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 51,
+          "tension": 216.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 52,
+          "tension": 203.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 53,
+          "tension": 202.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 54,
+          "tension": 200.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 55,
+          "tension": 200.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 56,
+          "tension": 200.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 57,
+          "tension": 200.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 58,
+          "tension": 200.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 59,
+          "tension": 200.0,
+          "calibrated_tension": 0
+        },
+        {
+          "timestamp": 60,
+          "tension": 510.0,
+          "calibrated_tension": 61.08247422680413
+        },
+        {
+          "timestamp": 61,
+          "tension": 609.0,
+          "calibrated_tension": 86.5979381443299
+        },
+        {
+          "timestamp": 62,
+          "tension": 659.0,
+          "calibrated_tension": 99.48453608247422
+        },
+        {
+          "timestamp": 63,
+          "tension": 655.0,
+          "calibrated_tension": 98.4536082474227
+        },
+        {
+          "timestamp": 64,
+          "tension": 659.0,
+          "calibrated_tension": 99.48453608247422
+        },
+        {
+          "timestamp": 65,
+          "tension": 657.0,
+          "calibrated_tension": 98.96907216494846
+        },
+        {
+          "timestamp": 66,
+          "tension": 643.0,
+          "calibrated_tension": 95.36082474226805
+        },
+        {
+          "timestamp": 67,
+          "tension": 598.0,
+          "calibrated_tension": 83.76288659793815
+        },
+        {
+          "timestamp": 68,
+          "tension": 560.0,
+          "calibrated_tension": 73.96907216494846
+        },
+        {
+          "timestamp": 69,
+          "tension": 534.0,
+          "calibrated_tension": 67.26804123711341
+        },
+        {
+          "timestamp": 70,
+          "tension": 503.0,
+          "calibrated_tension": 59.27835051546392
+        },
+        {
+          "timestamp": 71,
+          "tension": 444.0,
+          "calibrated_tension": 44.072164948453604
+        }
+      ],
+      "workout_folder": "workouts/workout_20251005_122048",
+      "graph_path": "workouts/workout_20251005_122048/graph.png",
+      "calibration_used": true,
+      "calibration_baseline": 273.0,
+      "calibration_max": 661.0,
+      "metrics": {
+        "max_tension": 659.0,
+        "avg_tension": 426.48,
+        "min_tension": 200.0,
+        "max_calibrated": 99.48,
+        "avg_calibrated": 44.44
       }
     }
   ],
   "statistics": {
-    "total_workouts": 5,
-    "total_duration_seconds": 279,
-    "average_duration_seconds": 55.8,
-    "last_update": "2025-10-05 11:28:29"
+    "total_workouts": 2,
+    "total_duration_seconds": 89,
+    "average_duration_seconds": 44.5,
+    "last_update": "2025-10-05 12:20:50"
   }
 }
