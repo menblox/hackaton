@@ -36,91 +36,152 @@ COLORS = {
 }
 
 # BLE Configuration
-SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+TARGET_MAC_ADDRESS = "B0:B2:1C:A7:E2:9A"
 CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
 class BLESensorManager:
     def __init__(self):
         self.client = None
         self.is_connected = False
-        self.is_scanning = False
+        self.is_connecting = False
         self.current_value = 0
         self.loop = None
         self.thread = None
+        self.is_reading = False
         
     def start_ble_loop(self):
-        """Start BLE in a separate thread"""
+        """НОВЫЙ МЕТОД: Start BLE in a separate thread"""
         if self.loop is None:
             self.loop = asyncio.new_event_loop()
             self.thread = threading.Thread(target=self._run_ble_loop, daemon=True)
             self.thread.start()
+            
+            # Start automatic connection
+            asyncio.run_coroutine_threadsafe(self._auto_connect(), self.loop)
     
     def _run_ble_loop(self):
         """Run the asyncio event loop"""
         asyncio.set_event_loop(self.loop)
-        self.loop.run_forever()
-    
-    async def _connect_to_sensor(self):
-        """Connect to BLE sensor"""
-        print("Поиск ESP32...")
-        
-        devices = await BleakScanner.discover(timeout=10.0)
-        target_device = next((d for d in devices if d.name and "Оно живое!" in d.name), None)
-        
-        if not target_device:
-            print("ESP32 не найдена")
-            return False
-        
-        print(f"Найдена: {target_device.name}")
-        
         try:
-            self.client = BleakClient(target_device)
-            await self.client.connect()
-            self.is_connected = True
-            print("Подключено к датчику!")
-            return True
-            
+            self.loop.run_forever()
         except Exception as e:
-            print(f"❌ Ошибка подключения: {e}")
-            return False
+            print(f"❌ Ошибка в BLE loop: {e}")
+    
+    async def _auto_connect(self):
+        """ПЕРЕПИСАН: прямое подключение по MAC без сканирования"""
+        print(f"🔍 Запуск автоматического подключения к датчику по MAC: {TARGET_MAC_ADDRESS}")
+        self.is_connecting = True
+        
+        connection_attempts = 0
+        max_attempts = 20
+        
+        while not self.is_connected and connection_attempts < max_attempts:
+            connection_attempts += 1
+            print(f"🔌 Попытка подключения {connection_attempts}/{max_attempts}")
+            
+            try:
+                # Прямое подключение по MAC-адресу без сканирования
+                print(f"📡 Прямое подключение к {TARGET_MAC_ADDRESS}...")
+                
+                # Пробуем разные варианты MAC-адреса
+                mac_variants = [
+                    TARGET_MAC_ADDRESS,
+                    TARGET_MAC_ADDRESS.upper(),
+                    TARGET_MAC_ADDRESS.lower(),
+                    TARGET_MAC_ADDRESS.replace(':', '-'),
+                    TARGET_MAC_ADDRESS.replace('-', ':')
+                ]
+                
+                for mac in mac_variants:
+                    try:
+                        print(f"🔧 Пробуем MAC: {mac}")
+                        self.client = BleakClient(mac)
+                        
+                        # Пробуем подключиться с таймаутом
+                        await self.client.connect(timeout=30.0)
+                        
+                        # Проверяем, что подключение действительно установлено
+                        if self.client.is_connected:
+                            self.is_connected = True
+                            self.is_connecting = False
+                            print(f"🎉 УСПЕШНО подключено к датчику! MAC: {mac}")
+                            
+                            # Пробуем прочитать данные для проверки
+                            try:
+                                data = await self.client.read_gatt_char(CHARACTERISTIC_UUID)
+                                sensor_value = data.decode('utf-8').strip()
+                                print(f"📊 Первые данные с датчика: {sensor_value}")
+                            except Exception as e:
+                                print(f"⚠️ Не удалось прочитать данные, но подключение установлено: {e}")
+                            
+                            return
+                        else:
+                            print(f"❌ Подключение не установлено для MAC: {mac}")
+                            await self.client.disconnect()
+                            
+                    except Exception as e:
+                        print(f"❌ Ошибка подключения к {mac}: {e}")
+                        continue
+                
+                print("🔄 Все варианты MAC-адреса не сработали, повтор через 3 секунды...")
+                await asyncio.sleep(3)
+                    
+            except Exception as e:
+                print(f"❌ Общая ошибка подключения: {e}")
+                print("🔄 Повтор через 5 секунд...")
+                await asyncio.sleep(5)
+        
+        if not self.is_connected:
+            self.is_connecting = False
+            print(f"❌ НЕ УДАЛОСЬ подключиться после {max_attempts} попыток")
     
     async def _read_sensor_data(self):
-        """Read data from BLE sensor"""
-        if not self.client or not self.is_connected:
+        """Read data from BLE sensor with zero value filtering"""
+        if not self.client or not self.is_connected or not self.is_reading:
             return
         
         try:
             data = await self.client.read_gatt_char(CHARACTERISTIC_UUID)
             sensor_value = data.decode('utf-8').strip()
             
-            # Convert to integer, handle potential errors
+            # Convert to integer and filter zero values
             try:
-                self.current_value = float(sensor_value)
-                print(f"📈 Напряжение мышцы: {self.current_value}")
+                value = float(sensor_value)
+                if value != 0:  # Accept only non-zero values
+                    self.current_value = value
             except ValueError:
                 print(f"❌ Неверный формат данных: {sensor_value}")
                 
         except Exception as e:
-            print(f"❌ Ошибка чтения: {e}")
+            print(f"❌ Ошибка чтения датчика: {e}")
             self.is_connected = False
-    
-    def connect_sensor(self):
-        """Connect to sensor from main thread"""
-        if self.loop and not self.is_connected:
-            asyncio.run_coroutine_threadsafe(self._connect_to_sensor(), self.loop)
     
     def read_sensor_data(self):
         """Read sensor data from main thread"""
-        if self.loop and self.is_connected:
+        if self.loop and self.is_connected and self.is_reading:
             asyncio.run_coroutine_threadsafe(self._read_sensor_data(), self.loop)
     
+    def start_reading(self):
+        """Start reading data from sensor"""
+        self.is_reading = True
+        print("📊 Начато чтение данных с датчика")
+    
+    def stop_reading(self):
+        """Stop reading data from sensor"""
+        self.is_reading = False
+        print("⏸️ Остановлено чтение данных с датчика")
+    
     def disconnect_sensor(self):
-        """Disconnect from sensor"""
+        """Disconnect from sensor (only when app closes)"""
         if self.loop and self.client and self.is_connected:
             async def disconnect():
-                await self.client.disconnect()
-                self.is_connected = False
-                print("Отключено от датчика")
+                try:
+                    await self.client.disconnect()
+                    self.is_connected = False
+                    self.is_reading = False
+                    print("🔌 Отключено от датчика")
+                except Exception as e:
+                    print(f"❌ Ошибка отключения: {e}")
             
             asyncio.run_coroutine_threadsafe(disconnect(), self.loop)
 
@@ -215,22 +276,50 @@ class MainScreen(Screen):
         subtitle_label.bind(texture_size=subtitle_label.setter('size'))
         layout.add_widget(subtitle_label)
         
+        # Connection status
+        self.status_label = Label(
+            text='Подключение к датчику...',
+            font_size='16sp',
+            color=COLORS['white'],
+            size_hint=(0.8, None),
+            height=40,
+            pos_hint={'center_x': 0.5, 'center_y': 0.25},
+            text_size=(Window.size[0] * 0.8, None)
+        )
+        layout.add_widget(self.status_label)
+        
         # Start button with contrast color
-        start_button = RoundedButton(
+        self.start_button = RoundedButton(
             text='НАЧАТЬ',
             font_size='24sp',
             size_hint=(0.6, 0.12),
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
             color=COLORS['white']
         )
-        start_button.bg_color.rgba = COLORS['button_start']
-        start_button.bind(on_press=self.switch_to_workout_menu)
-        layout.add_widget(start_button)
+        self.start_button.bg_color.rgba = COLORS['button_start']
+        self.start_button.bind(on_press=self.switch_to_workout_menu)
+        layout.add_widget(self.start_button)
         
         self.add_widget(layout)
+        
+        # Start checking connection status
+        Clock.schedule_interval(self.update_connection_status, 1.0)
+
+    def update_connection_status(self, dt):
+        """Update connection status display"""
+        if sensor_manager.is_connected:
+            self.status_label.text = '✅ Датчик подключен'
+            self.start_button.disabled = False
+        elif sensor_manager.is_connecting:
+            self.status_label.text = '🔄 Подключение к датчику...'
+            self.start_button.disabled = True
+        else:
+            self.status_label.text = '❌ Датчик не подключен'
+            self.start_button.disabled = True
 
     def switch_to_workout_menu(self, instance):
-        self.manager.current = 'workout_menu'
+        if sensor_manager.is_connected:
+            self.manager.current = 'workout_menu'
 
 class WorkoutMenuScreen(Screen):
     def __init__(self, **kwargs):
@@ -255,7 +344,7 @@ class WorkoutMenuScreen(Screen):
             pos_hint={'top': 0.9, 'center_x': 0.5},
             text_size=(Window.size[0] * 0.8, None)
         )
-        title_label.bind(texture_size=title_label.setter('size'))
+        title_label.bind(texture_size=title_label.setter('text_size'))
         layout.add_widget(title_label)
         
         # Menu cards layout
@@ -652,7 +741,7 @@ class WorkoutScreen(Screen):
         # Sensor data
         sensor_card = CardLayout(height=100)
         self.sensor_label = Label(
-            text='Датчик: не подключен\nНажмите "ПОДКЛЮЧИТЬ ДАТЧИК"',
+            text='Датчик: подключение...',
             font_size='18sp',
             color=COLORS['text_primary']
         )
@@ -681,17 +770,6 @@ class WorkoutScreen(Screen):
         control_layout.add_widget(stop_button)
         main_layout.add_widget(control_layout)
         
-        # Sensor connection button
-        sensor_button = RoundedButton(
-            text='ПОДКЛЮЧИТЬ ДАТЧИК',
-            font_size='20sp',
-            size_hint_y=0.12,
-            color=COLORS['white']
-        )
-        sensor_button.bg_color.rgba = COLORS['accent']
-        sensor_button.bind(on_press=self.connect_sensor)
-        main_layout.add_widget(sensor_button)
-        
         # Save button
         save_button = RoundedButton(
             text='СОХРАНИТЬ ТРЕНИРОВКУ',
@@ -715,32 +793,35 @@ class WorkoutScreen(Screen):
         main_layout.add_widget(back_button)
         
         self.add_widget(main_layout)
-        
-        # Start BLE manager
-        sensor_manager.start_ble_loop()
 
-    def connect_sensor(self, instance):
-        """Connect to BLE sensor"""
-        self.sensor_label.text = 'Поиск датчика...'
-        sensor_manager.connect_sensor()
-        
-        # Start checking connection status
-        if not self.sensor_update_event:
-            self.sensor_update_event = Clock.schedule_interval(self.update_sensor_display, 0.5)
+    def on_enter(self):
+        """При входе на экран тренировки начинаем чтение данных"""
+        sensor_manager.start_reading()
+        self.sensor_update_event = Clock.schedule_interval(self.update_sensor_display, 0.5)
+
+    def on_leave(self):
+        """При выходе с экрана тренировки останавливаем чтение данных"""
+        sensor_manager.stop_reading()
+        if self.sensor_update_event:
+            self.sensor_update_event.cancel()
+            self.sensor_update_event = None
 
     def update_sensor_display(self, dt):
         """Update sensor data display"""
         if sensor_manager.is_connected:
             sensor_manager.read_sensor_data()
-            self.sensor_label.text = f'Напряжение мышцы: {sensor_manager.current_value}'
+            status = "✅ Подключен"
+            value_text = f"Напряжение мышцы: {sensor_manager.current_value}"
         else:
-            self.sensor_label.text = 'Датчик: не подключен\nНажмите "ПОДКЛЮЧИТЬ ДАТЧИК"'
+            status = "❌ Не подключен"
+            value_text = f"Поиск датчика {TARGET_MAC_ADDRESS}..."
+        
+        self.sensor_label.text = f"{status}\n{value_text}"
 
     def start_workout(self, instance):
-        if not self.timer_running:
+        if not self.timer_running and sensor_manager.is_connected:
             self.timer_running = True
             self.timer_event = Clock.schedule_interval(self.update_timer, 1.0)
-            self.sensor_label.text = 'Тренировка начата! Данные собираются...'
             print("Тренировка начата!")
 
     def stop_workout(self, instance):
@@ -748,12 +829,11 @@ class WorkoutScreen(Screen):
             self.timer_running = False
             if self.timer_event:
                 self.timer_event.cancel()
-            self.sensor_label.text = f'Тренировка остановлена. Время: {self.timer_label.text}'
             print(f"Тренировка остановлена. Время: {self.timer_label.text}")
 
     def collect_sensor_data(self):
         """Collect sensor data from BLE manager"""
-        if self.timer_running and sensor_manager.is_connected:
+        if self.timer_running and sensor_manager.is_connected and sensor_manager.current_value != 0:
             sensor_reading = {
                 'timestamp': self.time_elapsed,
                 'tension': sensor_manager.current_value
@@ -770,17 +850,17 @@ class WorkoutScreen(Screen):
             self.timer_label.text = f'{minutes:02d}:{seconds:02d}'
 
     def save_workout(self, instance):
-        if self.time_elapsed > 0:
+        if self.time_elapsed > 0 and self.sensor_data:
             minutes = self.time_elapsed // 60
             seconds = self.time_elapsed % 60
             workout_time = f'{minutes:02d}:{seconds:02d}'
             current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             
-            tension_values = [data['tension'] for data in self.sensor_data] if self.sensor_data else [0]
+            tension_values = [data['tension'] for data in self.sensor_data]
             
-            max_tension = max(tension_values) if tension_values else 0
-            avg_tension = sum(tension_values) / len(tension_values) if tension_values else 0
-            min_tension = min(tension_values) if tension_values else 0
+            max_tension = max(tension_values)
+            avg_tension = sum(tension_values) / len(tension_values)
+            min_tension = min(tension_values)
             
             workout_id = datetime.now().strftime('%Y%m%d_%H%M%S')
             workout_folder = f'workouts/workout_{workout_id}'
@@ -806,7 +886,6 @@ class WorkoutScreen(Screen):
             
             success = self.save_to_database(workout_entry)
             if success:
-                self.sensor_label.text = f'Тренировка сохранена! Время: {workout_time}'
                 if self.timer_running:
                     if self.timer_event:
                         self.timer_event.cancel()
@@ -817,8 +896,12 @@ class WorkoutScreen(Screen):
                 
                 if 'history' in self.manager.screen_names:
                     self.manager.get_screen('history').update_history()
+                
+                self.sensor_label.text = f'✅ Тренировка сохранена!\nВремя: {workout_time}'
             else:
-                self.sensor_label.text = 'Ошибка сохранения тренировки'
+                self.sensor_label.text = '❌ Ошибка сохранения тренировки'
+        else:
+            self.sensor_label.text = '❌ Нет данных для сохранения\nЗапустите тренировку и соберите данные'
 
     def create_tension_graph(self, sensor_data, save_path, max_tension, avg_tension, min_tension):
         if not sensor_data:
@@ -840,12 +923,11 @@ class WorkoutScreen(Screen):
         plt.axhline(y=min_tension, color='#45B7D1', linestyle='--', linewidth=2, label=f'Мин: {min_tension}')
         
         # Точки для максимального и минимального значений
-        if tension:
-            max_index = tension.index(max_tension)
-            min_index = tension.index(min_tension)
-            
-            plt.scatter(times[max_index], max_tension, color='#FF6B6B', s=100, zorder=5)
-            plt.scatter(times[min_index], min_tension, color='#45B7D1', s=100, zorder=5)
+        max_index = tension.index(max_tension)
+        min_index = tension.index(min_tension)
+        
+        plt.scatter(times[max_index], max_tension, color='#FF6B6B', s=100, zorder=5)
+        plt.scatter(times[min_index], min_tension, color='#45B7D1', s=100, zorder=5)
         
         # Заголовок и подписи
         plt.title('Динамика напряжения мышцы во времени', fontsize=16, fontweight='bold', pad=20)
@@ -902,10 +984,7 @@ class WorkoutScreen(Screen):
                 self.timer_event.cancel()
             self.timer_running = False
         
-        if self.sensor_update_event:
-            self.sensor_update_event.cancel()
-            
-        sensor_manager.disconnect_sensor()
+        # Не отключаемся от датчика, просто переходим на другой экран
         self.manager.current = 'workout_menu'
 
 class WorkoutDetailScreen(Screen):
@@ -1086,10 +1165,22 @@ class WorkoutApp(App):
         sm.add_widget(HistoryScreen(name='history'))
         sm.add_widget(WorkoutDetailScreen(name='workout_detail'))
         return sm
+    
+    def on_start(self):
+        """Запускаем BLE подключение при старте приложения"""
+        print("🚀 Запуск приложения...")
+        sensor_manager.start_ble_loop()
+    
+    def on_stop(self):
+        """При закрытии приложения отключаемся от датчика"""
+        sensor_manager.disconnect_sensor()
 
 if __name__ == '__main__':
     # Create necessary directories
     os.makedirs('workouts', exist_ok=True)
+    
+    print("🎯 Целевой MAC-адрес:", TARGET_MAC_ADDRESS)
+    print("🔧 UUID характеристики:", CHARACTERISTIC_UUID)
     
     # Run the app
     WorkoutApp().run()
