@@ -1,0 +1,994 @@
+{
+  "workouts": [
+    {
+      "id": "20251005_103922",
+      "time": "00:51",
+      "date": "2025-10-05 10:39:22",
+      "duration_seconds": 51,
+      "sensor_data": [
+        {
+          "timestamp": 5,
+          "tension": 377.0
+        },
+        {
+          "timestamp": 6,
+          "tension": 375.0
+        },
+        {
+          "timestamp": 7,
+          "tension": 376.0
+        },
+        {
+          "timestamp": 8,
+          "tension": 376.0
+        },
+        {
+          "timestamp": 9,
+          "tension": 350.0
+        },
+        {
+          "timestamp": 10,
+          "tension": 352.0
+        },
+        {
+          "timestamp": 11,
+          "tension": 346.0
+        },
+        {
+          "timestamp": 12,
+          "tension": 346.0
+        },
+        {
+          "timestamp": 13,
+          "tension": 348.0
+        },
+        {
+          "timestamp": 14,
+          "tension": 424.0
+        },
+        {
+          "timestamp": 15,
+          "tension": 347.0
+        },
+        {
+          "timestamp": 16,
+          "tension": 353.0
+        },
+        {
+          "timestamp": 17,
+          "tension": 354.0
+        },
+        {
+          "timestamp": 18,
+          "tension": 342.0
+        },
+        {
+          "timestamp": 19,
+          "tension": 342.0
+        },
+        {
+          "timestamp": 20,
+          "tension": 341.0
+        },
+        {
+          "timestamp": 21,
+          "tension": 348.0
+        },
+        {
+          "timestamp": 22,
+          "tension": 348.0
+        },
+        {
+          "timestamp": 23,
+          "tension": 354.0
+        },
+        {
+          "timestamp": 24,
+          "tension": 363.0
+        },
+        {
+          "timestamp": 25,
+          "tension": 363.0
+        },
+        {
+          "timestamp": 26,
+          "tension": 426.0
+        },
+        {
+          "timestamp": 27,
+          "tension": 426.0
+        },
+        {
+          "timestamp": 28,
+          "tension": 497.0
+        },
+        {
+          "timestamp": 29,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 30,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 31,
+          "tension": 661.0
+        },
+        {
+          "timestamp": 32,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 33,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 34,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 35,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 36,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 37,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 38,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 39,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 40,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 41,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 42,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 43,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 44,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 45,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 46,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 47,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 48,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 49,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 50,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 51,
+          "tension": 660.0
+        }
+      ],
+      "workout_folder": "workouts/workout_20251005_103922",
+      "graph_path": "workouts/workout_20251005_103922/graph.png",
+      "metrics": {
+        "max_tension": 661.0,
+        "avg_tension": 511.81,
+        "min_tension": 341.0
+      }
+    },
+    {
+      "id": "20251005_110104",
+      "time": "01:09",
+      "date": "2025-10-05 11:01:04",
+      "duration_seconds": 69,
+      "sensor_data": [
+        {
+          "timestamp": 7,
+          "tension": 111.4
+        },
+        {
+          "timestamp": 8,
+          "tension": 336.6
+        },
+        {
+          "timestamp": 9,
+          "tension": 566.2
+        },
+        {
+          "timestamp": 10,
+          "tension": 565.0
+        },
+        {
+          "timestamp": 11,
+          "tension": 534.0
+        },
+        {
+          "timestamp": 12,
+          "tension": 479.4
+        },
+        {
+          "timestamp": 13,
+          "tension": 465.4
+        },
+        {
+          "timestamp": 14,
+          "tension": 453.8
+        },
+        {
+          "timestamp": 15,
+          "tension": 425.0
+        },
+        {
+          "timestamp": 16,
+          "tension": 372.6
+        },
+        {
+          "timestamp": 17,
+          "tension": 340.6
+        },
+        {
+          "timestamp": 18,
+          "tension": 307.4
+        },
+        {
+          "timestamp": 19,
+          "tension": 281.0
+        },
+        {
+          "timestamp": 20,
+          "tension": 261.8
+        },
+        {
+          "timestamp": 21,
+          "tension": 153.0
+        },
+        {
+          "timestamp": 22,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 23,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 24,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 25,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 26,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 27,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 28,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 29,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 30,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 31,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 32,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 33,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 34,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 35,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 36,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 37,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 38,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 39,
+          "tension": 51.4
+        },
+        {
+          "timestamp": 40,
+          "tension": 3.5692307692307623
+        },
+        {
+          "timestamp": 41,
+          "tension": 3.5692307692307623
+        },
+        {
+          "timestamp": 42,
+          "tension": 3.3538461538461433
+        },
+        {
+          "timestamp": 43,
+          "tension": 3.5384615384615246
+        },
+        {
+          "timestamp": 44,
+          "tension": 9.923076923076906
+        },
+        {
+          "timestamp": 45,
+          "tension": 8.523076923076905
+        },
+        {
+          "timestamp": 46,
+          "tension": 163.5230769230769
+        },
+        {
+          "timestamp": 47,
+          "tension": 200.1230769230769
+        },
+        {
+          "timestamp": 48,
+          "tension": 156.5230769230769
+        },
+        {
+          "timestamp": 49,
+          "tension": 96.9230769230769
+        },
+        {
+          "timestamp": 50,
+          "tension": 58.553846153846145
+        },
+        {
+          "timestamp": 51,
+          "tension": 20.18461538461538
+        },
+        {
+          "timestamp": 52,
+          "tension": 12.369230769230763
+        },
+        {
+          "timestamp": 53,
+          "tension": 13.938461538461524
+        },
+        {
+          "timestamp": 54,
+          "tension": 60.12307692307691
+        },
+        {
+          "timestamp": 55,
+          "tension": 213.5230769230769
+        },
+        {
+          "timestamp": 56,
+          "tension": 327.7230769230769
+        },
+        {
+          "timestamp": 57,
+          "tension": 358.5230769230769
+        },
+        {
+          "timestamp": 58,
+          "tension": 367.7230769230769
+        },
+        {
+          "timestamp": 59,
+          "tension": 388.5230769230769
+        },
+        {
+          "timestamp": 60,
+          "tension": 239.95384615384614
+        },
+        {
+          "timestamp": 61,
+          "tension": 85.55384615384614
+        },
+        {
+          "timestamp": 62,
+          "tension": 5.569230769230762
+        },
+        {
+          "timestamp": 63,
+          "tension": 2.784615384615381
+        },
+        {
+          "timestamp": 64,
+          "tension": 2.784615384615381
+        },
+        {
+          "timestamp": 65,
+          "tension": 2.784615384615381
+        },
+        {
+          "timestamp": 66,
+          "tension": 2.784615384615381
+        },
+        {
+          "timestamp": 67,
+          "tension": 2.784615384615381
+        },
+        {
+          "timestamp": 68,
+          "tension": 2.784615384615381
+        },
+        {
+          "timestamp": 69,
+          "tension": 83.16923076923077
+        }
+      ],
+      "workout_folder": "workouts/workout_20251005_110104",
+      "graph_path": "workouts/workout_20251005_110104/graph.png",
+      "metrics": {
+        "max_tension": 566.2,
+        "avg_tension": 150.48,
+        "min_tension": 2.784615384615381
+      }
+    },
+    {
+      "id": "20251005_110304",
+      "time": "01:38",
+      "date": "2025-10-05 11:03:04",
+      "duration_seconds": 98,
+      "sensor_data": [
+        {
+          "timestamp": 1,
+          "tension": 121.15384615384615
+        },
+        {
+          "timestamp": 2,
+          "tension": 37.98461538461538
+        },
+        {
+          "timestamp": 3,
+          "tension": 37.98461538461538
+        },
+        {
+          "timestamp": 4,
+          "tension": 37.98461538461538
+        },
+        {
+          "timestamp": 5,
+          "tension": 37.98461538461538
+        },
+        {
+          "timestamp": 6,
+          "tension": 159.56923076923076
+        },
+        {
+          "timestamp": 7,
+          "tension": 159.56923076923076
+        },
+        {
+          "timestamp": 8,
+          "tension": 79.78461538461538
+        },
+        {
+          "timestamp": 9,
+          "tension": 79.78461538461538
+        },
+        {
+          "timestamp": 10,
+          "tension": 79.78461538461538
+        },
+        {
+          "timestamp": 11,
+          "tension": 79.78461538461538
+        },
+        {
+          "timestamp": 12,
+          "tension": 79.78461538461538
+        },
+        {
+          "timestamp": 13,
+          "tension": 79.78461538461538
+        },
+        {
+          "timestamp": 14,
+          "tension": 79.78461538461538
+        },
+        {
+          "timestamp": 15,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 16,
+          "tension": 2.4
+        },
+        {
+          "timestamp": 17,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 18,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 19,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 20,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 21,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 22,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 23,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 24,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 25,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 26,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 27,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 28,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 29,
+          "tension": 2.6
+        },
+        {
+          "timestamp": 30,
+          "tension": 2.2
+        },
+        {
+          "timestamp": 31,
+          "tension": 2.4
+        },
+        {
+          "timestamp": 32,
+          "tension": 2.4
+        },
+        {
+          "timestamp": 33,
+          "tension": 2.2
+        },
+        {
+          "timestamp": 34,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 35,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 36,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 37,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 38,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 39,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 40,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 41,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 42,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 43,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 44,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 45,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 46,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 47,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 48,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 49,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 50,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 51,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 52,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 53,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 54,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 55,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 56,
+          "tension": 2.4
+        },
+        {
+          "timestamp": 57,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 58,
+          "tension": 3.0
+        },
+        {
+          "timestamp": 59,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 60,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 61,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 62,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 63,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 64,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 65,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 66,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 67,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 68,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 69,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 70,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 71,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 72,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 73,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 74,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 75,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 76,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 77,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 78,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 79,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 80,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 81,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 82,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 83,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 84,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 85,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 86,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 87,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 88,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 89,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 90,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 91,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 92,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 93,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 94,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 95,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 96,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 97,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 98,
+          "tension": 1.2
+        }
+      ],
+      "workout_folder": "workouts/workout_20251005_110304",
+      "graph_path": "workouts/workout_20251005_110304/graph.png",
+      "metrics": {
+        "max_tension": 159.56923076923076,
+        "avg_tension": 13.11,
+        "min_tension": 1.2
+      }
+    },
+    {
+      "id": "20251005_110332",
+      "time": "00:23",
+      "date": "2025-10-05 11:03:32",
+      "duration_seconds": 23,
+      "sensor_data": [
+        {
+          "timestamp": 1,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 2,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 3,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 4,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 5,
+          "tension": 1.2
+        },
+        {
+          "timestamp": 6,
+          "tension": 1.8000000000000227
+        },
+        {
+          "timestamp": 7,
+          "tension": 3.3333333333333712
+        },
+        {
+          "timestamp": 8,
+          "tension": 3.9333333333333713
+        },
+        {
+          "timestamp": 9,
+          "tension": 3.9333333333333713
+        },
+        {
+          "timestamp": 10,
+          "tension": 4.333333333333371
+        },
+        {
+          "timestamp": 11,
+          "tension": 4.533333333333371
+        },
+        {
+          "timestamp": 12,
+          "tension": 4.333333333333371
+        },
+        {
+          "timestamp": 13,
+          "tension": 3.733333333333371
+        },
+        {
+          "timestamp": 14,
+          "tension": 3.133333333333371
+        },
+        {
+          "timestamp": 15,
+          "tension": 3.733333333333371
+        },
+        {
+          "timestamp": 16,
+          "tension": 3.5333333333333714
+        },
+        {
+          "timestamp": 17,
+          "tension": 2.9333333333333713
+        },
+        {
+          "timestamp": 18,
+          "tension": 2.5333333333333714
+        },
+        {
+          "timestamp": 19,
+          "tension": 2.3333333333333712
+        },
+        {
+          "timestamp": 20,
+          "tension": 1.7333333333333711
+        },
+        {
+          "timestamp": 21,
+          "tension": 1.5333333333333712
+        },
+        {
+          "timestamp": 22,
+          "tension": 1.5333333333333712
+        },
+        {
+          "timestamp": 23,
+          "tension": 1.5333333333333712
+        }
+      ],
+      "workout_folder": "workouts/workout_20251005_110332",
+      "graph_path": "workouts/workout_20251005_110332/graph.png",
+      "metrics": {
+        "max_tension": 4.533333333333371,
+        "avg_tension": 2.63,
+        "min_tension": 1.2
+      }
+    }
+  ],
+  "statistics": {
+    "total_workouts": 4,
+    "total_duration_seconds": 241,
+    "average_duration_seconds": 60.25,
+    "last_update": "2025-10-05 11:03:32"
+  }
+}

@@ -49,6 +49,14 @@ class BLESensorManager:
         self.thread = None
         self.is_reading = False
         
+        # Добавлено для калибровки
+        self.baseline = 0
+        self.max_value = 0
+        self.is_calibrated = False
+        self.is_calibrating = False
+        self.calibration_data = []
+        self.calibration_callback = None
+        
     def start_ble_loop(self):
         """НОВЫЙ МЕТОД: Start BLE in a separate thread"""
         if self.loop is None:
@@ -106,13 +114,9 @@ class BLESensorManager:
                             self.is_connecting = False
                             print(f"🎉 УСПЕШНО подключено к датчику! MAC: {mac}")
                             
-                            # Пробуем прочитать данные для проверки
-                            try:
-                                data = await self.client.read_gatt_char(CHARACTERISTIC_UUID)
-                                sensor_value = data.decode('utf-8').strip()
-                                print(f"📊 Первые данные с датчика: {sensor_value}")
-                            except Exception as e:
-                                print(f"⚠️ Не удалось прочитать данные, но подключение установлено: {e}")
+                            # Плата всегда в ожидании, но не начинает замер до команды
+                            self.is_reading = False
+                            print("📴 Плата в режиме ожидания - замер не активен")
                             
                             return
                         else:
@@ -149,6 +153,11 @@ class BLESensorManager:
                 value = float(sensor_value)
                 if value != 0:  # Accept only non-zero values
                     self.current_value = value
+                    
+                    # Если идет калибровка, собираем данные
+                    if self.is_calibrating:
+                        self.calibration_data.append(value)
+                        
             except ValueError:
                 print(f"❌ Неверный формат данных: {sensor_value}")
                 
@@ -162,14 +171,64 @@ class BLESensorManager:
             asyncio.run_coroutine_threadsafe(self._read_sensor_data(), self.loop)
     
     def start_reading(self):
-        """Start reading data from sensor"""
+        """Start reading data from sensor - ТОЛЬКО ПО КОМАНДЕ С КНОПКИ СТАРТ"""
         self.is_reading = True
-        print("📊 Начато чтение данных с датчика")
+        print("📊 НАЧАТ ЗАМЕР ДАННЫХ С ДАТЧИКА (кнопка СТАРТ)")
     
     def stop_reading(self):
         """Stop reading data from sensor"""
         self.is_reading = False
         print("⏸️ Остановлено чтение данных с датчика")
+    
+    def start_calibration(self):
+        """Начать процесс калибровки"""
+        if self.is_connected and not self.is_calibrating:
+            self.is_calibrating = True
+            self.calibration_data = []
+            self.is_reading = True  # Включаем чтение данных для калибровки
+            print("🔧 Начало процесса калибровки...")
+            
+            # Запускаем сбор данных для калибровки
+            async def calibration_process():
+                # Собираем данные в течение 10 секунд
+                await asyncio.sleep(10)
+                
+                # Останавливаем сбор данных
+                self.is_reading = False
+                self.is_calibrating = False
+                
+                # Анализируем собранные данные
+                if self.calibration_data:
+                    self.baseline = min(self.calibration_data)
+                    self.max_value = max(self.calibration_data)
+                    self.is_calibrated = True
+                    
+                    print(f"✅ Калибровка завершена!")
+                    print(f"   Базовый уровень (расслабление): {self.baseline:.2f}")
+                    print(f"   Максимальное напряжение: {self.max_value:.2f}")
+                    print(f"   Диапазон: {self.max_value - self.baseline:.2f}")
+                    
+                    # Вызываем callback для обновления интерфейса
+                    if self.calibration_callback:
+                        self.calibration_callback(self.baseline, self.max_value)
+                else:
+                    print("❌ Не удалось собрать данные для калибровки")
+            
+            # Запускаем процесс калибровки в отдельной задаче
+            asyncio.run_coroutine_threadsafe(calibration_process(), self.loop)
+    
+    def get_calibrated_value(self):
+        """Возвращает калиброванное значение (0-100%)"""
+        if not self.is_calibrated or self.max_value == self.baseline:
+            return self.current_value
+        
+        # Нормализуем значение от 0 до 100%
+        normalized = (self.current_value - self.baseline) / (self.max_value - self.baseline) * 100
+        return max(0, min(100, normalized))  # Ограничиваем диапазон 0-100%
+    
+    def set_calibration_callback(self, callback):
+        """Устанавливает callback для уведомления о завершении калибровки"""
+        self.calibration_callback = callback
     
     def disconnect_sensor(self):
         """Disconnect from sensor (only when app closes)"""
@@ -308,7 +367,7 @@ class MainScreen(Screen):
     def update_connection_status(self, dt):
         """Update connection status display"""
         if sensor_manager.is_connected:
-            self.status_label.text = '✅ Датчик подключен'
+            self.status_label.text = '✅ Датчик подключен (режим ожидания)'
             self.start_button.disabled = False
         elif sensor_manager.is_connecting:
             self.status_label.text = '🔄 Подключение к датчику...'
@@ -702,6 +761,8 @@ class WorkoutScreen(Screen):
         self.timer_label = None
         self.sensor_data = []
         self.sensor_update_event = None
+        self.calibration_progress = 0
+        self.calibration_event = None
 
         main_layout = BoxLayout(orientation='vertical', padding=25, spacing=25)
         
@@ -741,12 +802,22 @@ class WorkoutScreen(Screen):
         # Sensor data
         sensor_card = CardLayout(height=100)
         self.sensor_label = Label(
-            text='Датчик: подключение...',
+            text='Датчик: подключен (режим ожидания)',
             font_size='18sp',
             color=COLORS['text_primary']
         )
         sensor_card.add_widget(self.sensor_label)
         main_layout.add_widget(sensor_card)
+        
+        # Calibration info
+        self.calibration_card = CardLayout(height=80)
+        self.calibration_label = Label(
+            text='Калибровка не выполнена',
+            font_size='16sp',
+            color=COLORS['text_secondary']
+        )
+        self.calibration_card.add_widget(self.calibration_label)
+        main_layout.add_widget(self.calibration_card)
         
         # Control buttons
         control_layout = GridLayout(cols=2, spacing=15, size_hint_y=0.25)
@@ -769,6 +840,17 @@ class WorkoutScreen(Screen):
         control_layout.add_widget(start_button)
         control_layout.add_widget(stop_button)
         main_layout.add_widget(control_layout)
+        
+        # Calibration button
+        self.calibrate_button = RoundedButton(
+            text='КАЛИБРОВКА',
+            font_size='18sp',
+            size_hint_y=0.1,
+            color=COLORS['white']
+        )
+        self.calibrate_button.bg_color.rgba = COLORS['accent']
+        self.calibrate_button.bind(on_press=self.start_calibration)
+        main_layout.add_widget(self.calibrate_button)
         
         # Save button
         save_button = RoundedButton(
@@ -793,11 +875,15 @@ class WorkoutScreen(Screen):
         main_layout.add_widget(back_button)
         
         self.add_widget(main_layout)
+        
+        # Устанавливаем callback для калибровки
+        sensor_manager.set_calibration_callback(self.on_calibration_complete)
 
     def on_enter(self):
-        """При входе на экран тренировки начинаем чтение данных"""
-        sensor_manager.start_reading()
+        """При входе на экран тренировки - плата остается в ожидании"""
+        # НЕ начинаем чтение автоматически - только по нажатию кнопки СТАРТ
         self.sensor_update_event = Clock.schedule_interval(self.update_sensor_display, 0.5)
+        self.update_calibration_display()
 
     def on_leave(self):
         """При выходе с экрана тренировки останавливаем чтение данных"""
@@ -805,28 +891,130 @@ class WorkoutScreen(Screen):
         if self.sensor_update_event:
             self.sensor_update_event.cancel()
             self.sensor_update_event = None
+        
+        if self.calibration_event:
+            self.calibration_event.cancel()
+            self.calibration_event = None
 
     def update_sensor_display(self, dt):
         """Update sensor data display"""
         if sensor_manager.is_connected:
-            sensor_manager.read_sensor_data()
-            status = "✅ Подключен"
-            value_text = f"Напряжение мышцы: {sensor_manager.current_value}"
+            if sensor_manager.is_reading:
+                sensor_manager.read_sensor_data()
+                
+                if sensor_manager.is_calibrating:
+                    # Показываем прогресс калибровки
+                    status = "🔧 Идет калибровка..."
+                    value_text = f"Прогресс: {self.calibration_progress}%"
+                else:
+                    status = "✅ Идет замер"
+                    if sensor_manager.is_calibrated:
+                        # Показываем калиброванное значение в %
+                        calibrated_value = sensor_manager.get_calibrated_value()
+                        value_text = f"Напряжение: {calibrated_value:.1f}%"
+                    else:
+                        value_text = f"Напряжение: {sensor_manager.current_value}"
+            else:
+                status = "✅ Подключен (ожидание)"
+                value_text = "Нажмите СТАРТ для начала замера"
         else:
             status = "❌ Не подключен"
             value_text = f"Поиск датчика {TARGET_MAC_ADDRESS}..."
         
         self.sensor_label.text = f"{status}\n{value_text}"
 
+    def update_calibration_display(self):
+        """Обновляет отображение информации о калибровке"""
+        if sensor_manager.is_calibrated:
+            self.calibration_label.text = f"Калибровка: ✅\nБазовый: {sensor_manager.baseline:.1f} | Макс: {sensor_manager.max_value:.1f}"
+            self.calibration_label.color = COLORS['success']
+        else:
+            self.calibration_label.text = "Калибровка: ❌ не выполнена"
+            self.calibration_label.color = COLORS['danger']
+
+    def start_calibration(self, instance):
+        """Начать процесс калибровки"""
+        if sensor_manager.is_connected and not sensor_manager.is_calibrating:
+            self.calibration_progress = 0
+            self.calibrate_button.disabled = True
+            self.sensor_label.text = "🔧 Начата калибровка...\nРасслабьте мышцу, затем напрягите"
+            
+            # Запускаем прогресс калибровки
+            self.calibration_event = Clock.schedule_interval(self.update_calibration_progress, 0.5)
+            
+            # Запускаем калибровку в менеджере
+            sensor_manager.start_calibration()
+
+    def update_calibration_progress(self, dt):
+        """Обновляет прогресс калибровки"""
+        if sensor_manager.is_calibrating:
+            self.calibration_progress = min(100, self.calibration_progress + 5)
+        else:
+            if self.calibration_event:
+                self.calibration_event.cancel()
+                self.calibration_event = None
+
+    def on_calibration_complete(self, baseline, max_value):
+        """Callback при завершении калибровки"""
+        self.calibrate_button.disabled = False
+        self.update_calibration_display()
+        self.sensor_label.text = f"✅ Калибровка завершена!\nБазовый: {baseline:.1f} | Макс: {max_value:.1f}"
+        
+        # Сохраняем калибровочные данные
+        self.save_calibration_data(baseline, max_value)
+
+    def save_calibration_data(self, baseline, max_value):
+        """Сохраняет данные калибровки в файл"""
+        try:
+            calibration_data = {
+                'baseline': baseline,
+                'max_value': max_value,
+                'calibration_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            
+            with open('calibration_data.json', 'w', encoding='utf-8') as f:
+                json.dump(calibration_data, f, indent=2, ensure_ascii=False)
+            
+            print("✅ Данные калибровки сохранены")
+        except Exception as e:
+            print(f"❌ Ошибка сохранения калибровки: {e}")
+
+    def load_calibration_data(self):
+        """Загружает данные калибровки из файла"""
+        try:
+            if os.path.exists('calibration_data.json'):
+                with open('calibration_data.json', 'r', encoding='utf-8') as f:
+                    calibration_data = json.load(f)
+                
+                sensor_manager.baseline = calibration_data.get('baseline', 0)
+                sensor_manager.max_value = calibration_data.get('max_value', 0)
+                sensor_manager.is_calibrated = True
+                
+                print("✅ Данные калибровки загружены")
+                return True
+        except Exception as e:
+            print(f"❌ Ошибка загрузки калибровки: {e}")
+        
+        return False
+
     def start_workout(self, instance):
+        """НАЧАТЬ ЗАМЕР - только при нажатии этой кнопки"""
         if not self.timer_running and sensor_manager.is_connected:
+            # Загружаем калибровочные данные если есть
+            if not sensor_manager.is_calibrated:
+                self.load_calibration_data()
+            
+            # ВКЛЮЧАЕМ ЗАМЕР ДАННЫХ ТОЛЬКО ЗДЕСЬ
+            sensor_manager.start_reading()
             self.timer_running = True
             self.timer_event = Clock.schedule_interval(self.update_timer, 1.0)
-            print("Тренировка начата!")
+            print("Тренировка начата! Замер данных АКТИВИРОВАН")
 
     def stop_workout(self, instance):
         if self.timer_running:
             self.timer_running = False
+            # ОСТАНАВЛИВАЕМ ЗАМЕР ДАННЫХ
+            sensor_manager.stop_reading()
             if self.timer_event:
                 self.timer_event.cancel()
             print(f"Тренировка остановлена. Время: {self.timer_label.text}")
@@ -836,7 +1024,8 @@ class WorkoutScreen(Screen):
         if self.timer_running and sensor_manager.is_connected and sensor_manager.current_value != 0:
             sensor_reading = {
                 'timestamp': self.time_elapsed,
-                'tension': sensor_manager.current_value
+                'tension': sensor_manager.current_value,
+                'calibrated_tension': sensor_manager.get_calibrated_value() if sensor_manager.is_calibrated else sensor_manager.current_value
             }
             
             self.sensor_data.append(sensor_reading)
@@ -857,10 +1046,14 @@ class WorkoutScreen(Screen):
             current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             
             tension_values = [data['tension'] for data in self.sensor_data]
+            calibrated_values = [data['calibrated_tension'] for data in self.sensor_data] if sensor_manager.is_calibrated else tension_values
             
             max_tension = max(tension_values)
             avg_tension = sum(tension_values) / len(tension_values)
             min_tension = min(tension_values)
+            
+            max_calibrated = max(calibrated_values) if sensor_manager.is_calibrated else 0
+            avg_calibrated = sum(calibrated_values) / len(calibrated_values) if sensor_manager.is_calibrated else 0
             
             workout_id = datetime.now().strftime('%Y%m%d_%H%M%S')
             workout_folder = f'workouts/workout_{workout_id}'
@@ -877,10 +1070,15 @@ class WorkoutScreen(Screen):
                 'sensor_data': self.sensor_data,
                 'workout_folder': workout_folder,
                 'graph_path': graph_path,
+                'calibration_used': sensor_manager.is_calibrated,
+                'calibration_baseline': sensor_manager.baseline if sensor_manager.is_calibrated else 0,
+                'calibration_max': sensor_manager.max_value if sensor_manager.is_calibrated else 0,
                 'metrics': {
                     'max_tension': max_tension,
                     'avg_tension': round(avg_tension, 2),
-                    'min_tension': min_tension
+                    'min_tension': min_tension,
+                    'max_calibrated': round(max_calibrated, 2) if sensor_manager.is_calibrated else 0,
+                    'avg_calibrated': round(avg_calibrated, 2) if sensor_manager.is_calibrated else 0
                 }
             }
             
@@ -890,6 +1088,8 @@ class WorkoutScreen(Screen):
                     if self.timer_event:
                         self.timer_event.cancel()
                     self.timer_running = False
+                # Останавливаем замер при сохранении
+                sensor_manager.stop_reading()
                 self.time_elapsed = 0
                 self.sensor_data = []
                 self.timer_label.text = '00:00'
@@ -984,7 +1184,8 @@ class WorkoutScreen(Screen):
                 self.timer_event.cancel()
             self.timer_running = False
         
-        # Не отключаемся от датчика, просто переходим на другой экран
+        # Останавливаем замер при переходе на другой экран
+        sensor_manager.stop_reading()
         self.manager.current = 'workout_menu'
 
 class WorkoutDetailScreen(Screen):
@@ -1084,6 +1285,12 @@ class WorkoutDetailScreen(Screen):
             ('Ср. напряжение:', f"{metrics.get('avg_tension', 0):.1f}"),
             ('Мин. напряжение:', f"{min_tension:.0f}")
         ]
+        
+        if workout.get('calibration_used', False):
+            metrics_data.extend([
+                ('Макс. калибр.:', f"{metrics.get('max_calibrated', 0):.1f}%"),
+                ('Ср. калибр.:', f"{metrics.get('avg_calibrated', 0):.1f}%")
+            ])
         
         for label, value in metrics_data:
             label_widget = Label(

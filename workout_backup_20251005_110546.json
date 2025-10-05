@@ -1,0 +1,77 @@
+{
+  "workouts": [
+    {
+      "id": "20251005_110508",
+      "time": "00:36",
+      "date": "2025-10-05 11:05:08",
+      "duration_seconds": 36,
+      "sensor_data": [
+        {
+          "timestamp": 24,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 25,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 26,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 27,
+          "tension": 659.0
+        },
+        {
+          "timestamp": 28,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 29,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 30,
+          "tension": 660.0
+        },
+        {
+          "timestamp": 31,
+          "tension": 659.0
+        },
+        {
+          "timestamp": 32,
+          "tension": 661.0
+        },
+        {
+          "timestamp": 33,
+          "tension": 659.0
+        },
+        {
+          "timestamp": 34,
+          "tension": 659.0
+        },
+        {
+          "timestamp": 35,
+          "tension": 659.0
+        },
+        {
+          "timestamp": 36,
+          "tension": 656.0
+        }
+      ],
+      "workout_folder": "workouts/workout_20251005_110508",
+      "graph_path": "workouts/workout_20251005_110508/graph.png",
+      "metrics": {
+        "max_tension": 661.0,
+        "avg_tension": 659.38,
+        "min_tension": 656.0
+      }
+    }
+  ],
+  "statistics": {
+    "total_workouts": 1,
+    "total_duration_seconds": 36,
+    "average_duration_seconds": 36.0,
+    "last_update": "2025-10-05 11:05:10"
+  }
+}
